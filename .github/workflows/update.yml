@@ -1,6 +1,6 @@
 # 유동성 데이터 자동 갱신.
 #
-# 평일마다 update.py를 실행해 latest.json / history.json을 다시 만들고,
+# 평일마다 update.py를 실행해 data/latest.json · data/history.json을 다시 만들고,
 # 바뀐 게 있으면 저장소에 커밋한다. GitHub Pages 대시보드는 이 두 파일만 읽는다.
 #
 # 스케줄: 평일 22:00 UTC (한국 시간 다음날 07:00).
@@ -55,11 +55,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add latest.json history.json
+          git add data/latest.json data/history.json
           if git diff --cached --quiet; then
             echo "변경 없음 — 커밋 생략"
             exit 0
           fi
-          as_of=$(python -c "import json; print(json.load(open('latest.json'))['as_of_date'])")
+          as_of=$(python -c "import json; print(json.load(open('data/latest.json'))['as_of_date'])")
           git commit -m "data: ${as_of} 기준 갱신"
           git push

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-09-26T09:31:59Z",
+  "generated_at": "2026-09-26T23:34:41Z",
   "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}",
   "as_of_date": "2026-09-25",
   "series": {
@@ -215,6 +215,9 @@
       "delta_wtregen_trillions": 0.013133999999999979,
       "delta_rrpontsyd_trillions": 0.0003259999999999999,
       "delta_wresbal_trillions": -0.013866000000000156,
+      "delta_walcl_trillions": -0.012251000000000012,
+      "delta_wshomcb_trillions": -0.020445999999999964,
+      "delta_wcurcir_trillions": 0.007309000000000232,
       "primary_driver": "QE",
       "interpretation": "mixed_or_other"
     }

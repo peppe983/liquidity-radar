@@ -47,9 +47,11 @@
 | SRF 사용량 | **뉴욕 연은 Markets API** (FRED에 없음) | 상시레포기구 사용액. 민간 조달 실패를 뜻해 0 이탈 자체가 신호 | 영업일 | 달러 |
 
 SRF 조회 방식: `GET https://markets.newyorkfed.org/api/rp/results/search.json?startDate=…&endDate=…&operationTypes=Repo`
-→ `operationType=="Repo" AND operationMethod=="Full Allotment"`인 항목만 클라이언트에서
-필터링해 날짜별 `totalAmtAccepted` 합산. (API의 `securityType=srf` 파라미터는 항상 빈
-배열을 반환하므로 쓸 수 없음 — 실측 확인.)
+→ `operationType=="Repo"`인 항목을 전부 SRF로 보고(2021-07 SRF 도입 이후 연준 레포는 모두 SRF),
+점검용 소액 테스트("Small Value Exercise")만 빼서 날짜별 `totalAmtAccepted` 합산.
+`operationMethod`로 거르면 안 된다: 2025-12에 "Multiple Price" → "Full Allotment"로 방식이
+바뀌어, 예전 필터(Full Allotment만)는 그 이전 사용액을 전부 0으로 만들었다(2025-10-31 $50.4B 누락).
+(API의 `securityType=srf` 파라미터는 항상 빈 배열을 반환하므로 쓸 수 없음 — 실측 확인.)
 
 ## 4. 판단 결과 (`latest.json`의 `pressure` / `assessment`)
 

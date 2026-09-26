@@ -32,7 +32,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 log = logging.getLogger(__name__)
 
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
-LATEST_JSON = os.path.join(REPO_ROOT, "latest.json")
+LATEST_JSON = os.path.join(REPO_ROOT, "data", "latest.json")
 
 # FRED에서 13개 시리즈를 받는 데 10초 안팎이 걸린다. 도구를 부를 때마다 새로
 # 받으면 대화가 끊기므로 메모리에 캐시하고 주기적으로만 갱신한다. 원본 데이터가
@@ -391,7 +391,7 @@ def explain_indicator(name: str) -> dict:
             "caveat": "평상시 중앙값이 −6bp로 음수가 정상이다. 양수 자체가 이상 신호",
         },
         "srf": {
-            "formula": "뉴욕 연은 Full Allotment 레포 오퍼레이션의 일별 낙찰액 합계",
+            "formula": "뉴욕 연은 레포 오퍼레이션(=SRF, 점검용 소액 테스트 제외)의 일별 낙찰액 합계",
             "meaning": "민간에서 돈을 못 구해 연준 창구를 쓴 금액 = 조달 실패",
             "caveat": "0이라고 압력이 없다는 뜻은 아니다(낙인 효과). 스프레드와 병행 필수",
         },

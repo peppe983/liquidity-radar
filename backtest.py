@@ -31,12 +31,12 @@ df = pd.DataFrame({
 
 # SRF는 2021-07 도입. 그 이전 구간은 None(판정 불가)으로 둔다.
 r = requests.get("https://markets.newyorkfed.org/api/rp/results/search.json",
-                 params={"startDate": "2021-07-01", "endDate": "2026-09-24",
+                 params={"startDate": "2021-07-01", "endDate": pd.Timestamp.today().strftime("%Y-%m-%d"),
                          "operationTypes": "Repo"},
                  timeout=30, headers={"User-Agent": "liquidity-alert/0.1"})
 srf_by_date = {}
 for o in r.json()["repo"]["operations"]:
-    if o["operationType"] == "Repo" and o["operationMethod"] == "Full Allotment":
+    if assess.is_srf_operation(o):
         srf_by_date[o["operationDate"]] = srf_by_date.get(o["operationDate"], 0) + float(o.get("totalAmtAccepted") or 0)
 srf_start = pd.Timestamp("2021-07-01")
 

@@ -96,8 +96,10 @@ UNIT_TO_TRILLIONS = {
 
 SCHEMA_VERSION = 2
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
-LATEST_JSON_PATH = os.path.join(REPO_ROOT, "latest.json")
-HISTORY_JSON_PATH = os.path.join(REPO_ROOT, "history.json")
+# GitHub Pages 대시보드(index.html)가 data/ 아래 두 파일만 fetch한다.
+DATA_DIR = os.path.join(REPO_ROOT, "data")
+LATEST_JSON_PATH = os.path.join(DATA_DIR, "latest.json")
+HISTORY_JSON_PATH = os.path.join(DATA_DIR, "history.json")
 
 # 대시보드 차트용 시계열 길이. 3년이면 RRP가 1.57조에서 0으로 고갈되는 궤적이
 # 다 들어간다 — 이 프로젝트가 설명하려는 핵심 변화다.
@@ -365,6 +367,7 @@ def build_history(
 
 def write_latest_json(snapshot: dict, path: str) -> None:
     """latest.json을 원자적으로 쓴다 (동시 읽기 도중 잘림 방지)."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp_path = f"{path}.tmp"
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(snapshot, f, indent=2, ensure_ascii=False)

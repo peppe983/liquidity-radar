@@ -8,7 +8,7 @@ Steps 1–3 of the 6-step roadmap are implemented and step 5 is in progress.
 
 - **Step 0 (research)** — done: [doc/research.md](doc/research.md) (Korean).
 - **Step 1 (data pipeline)** — done: `update.py` fetches FRED series,
-  normalizes units, aligns to business days, writes `latest.json`.
+  normalizes units, aligns to business days, writes `data/latest.json`.
 - **Step 2 (judgment logic)** — done: `assess.py` computes the SOFR-IORB spread
   + Z-scores, pulls SRF usage from the NY Fed API, grades pressure on
   a four-level ladder, applies the pressure-first rule, and decomposes what
@@ -22,9 +22,21 @@ Steps 1–3 of the 6-step roadmap are implemented and step 5 is in progress.
 - **Step 5 (dashboard)** — in progress, done ahead of step 4 so the news
   output has somewhere to live. Split into 5-0 repo on GitHub
   (`peppe983/liquidity-radar`, public) ✅, 5-1 `history.json` ✅, 5-2 GitHub
-  Actions auto-update (`.github/workflows/update.yml`) ✅, 5-3 dashboard page
-  (designed first in Claude Design from [doc/design-brief.md](doc/design-brief.md), then built),
-  5-4 GitHub Pages deploy.
+  Actions auto-update (`.github/workflows/update.yml`) ✅, 5-3 dashboard page ✅
+  (designed in Claude Design from [doc/design-brief.md](doc/design-brief.md);
+  the handoff lives in `liquidity-radar-design/`), 5-4 GitHub Pages deploy.
+- **Dashboard layout.** `index.html` (one page, four hash-routed tabs:
+  `#summary` `#level` `#pressure` `#learn`) + `assets/` + `data/`.
+  `assets/tokens.css` and `assets/bundle.css` are verbatim copies of
+  `liquidity-radar-design/design-system/`; `assets/bundle.js` is the same
+  chart engine with the demo data removed (the S&P strip reads `LR.spx`).
+  Don't edit the design folder to change the site — its `preview/` pages
+  depend on the demo data. `assets/site.css` holds site-only fixes (notably
+  `[hidden]{display:none!important}`, since `.lr-page{display:grid}` otherwise
+  beats the design system's `[hidden]` rule and every tab shows at once).
+  `assets/app.js` only *displays* pipeline output: status, ladder level and
+  decomposition come from `assess.py`; JS derives ranges, ratios and sentences.
+  The verdict matrix in `index.html` must match `determine_status`.
 - **Steps 4 and 6 (news pipeline, testing/polish)** — not started.
 
 There is no test framework yet; verification is done by running the script
@@ -39,7 +51,8 @@ per-indicator reference (what each series means, what each derived value is).
 
 ```bash
 source .venv/bin/activate     # deps: uv pip install -r requirements.txt
-python update.py              # fetch + assess + rewrite latest.json
+python update.py              # fetch + assess + rewrite data/latest.json, data/history.json
+python -m http.server 8000    # serve the dashboard at http://localhost:8000 (file:// can't fetch data/)
 python backtest.py            # replay the pressure ladder over 2018-now
 python mcp_server.py          # MCP server over stdio (Claude Code / Desktop)
 python mcp_server.py --http   # same server over streamable-http (remote clients)
@@ -187,9 +200,13 @@ relationship is regime-dependent and breaks down in crises.
   `SOFR−IORB` is expressed in bp.
 - **SRF usage** is *not* on FRED. It comes from the NY Fed Markets API:
   `https://markets.newyorkfed.org/api/rp/results/search.json?startDate=…&endDate=…&operationTypes=Repo`,
-  filtering client-side for `operationType=="Repo" AND operationMethod=="Full
-  Allotment"` and summing `totalAmtAccepted` per date (the API's
-  `securityType=srf` parameter returns an empty array — don't use it).
+  keeping every `operationType=="Repo"` operation except "Small Value
+  Exercise" test runs (`assess.is_srf_operation`) and summing
+  `totalAmtAccepted` per date (the API's `securityType=srf` parameter returns
+  an empty array — don't use it). **Do not filter on `operationMethod`.** The
+  NY Fed switched SRF from "Multiple Price" to "Full Allotment" in 2025-12; an
+  earlier `=="Full Allotment"` filter silently zeroed all prior usage,
+  including $50.4B on 2025-10-31 and $11.1B on 2025-06-30.
 - **Four-level ladder (L0-L3), not a binary flag.** Each level's conditions
   are OR'd; see `classify_pressure_level` in `assess.py`. Every threshold
   comes from the measured distribution, not intuition:
@@ -200,9 +217,13 @@ relationship is regime-dependent and breaks down in crises.
 - **Z-score is one-sided.** Only an *upward* deviation is stress; a spread far
   *below* its norm means liquidity is abundant. Using `abs(z)` flags calm
   periods as pressure — a real bug the backtest caught.
-- **`SRF > 0` is unusable as a trigger.** 119 of 798 business days are nonzero
-  and most are single-digit millions, so it would light up permanently. Only
-  10 days exceeded $1B and 7 exceeded $10B — hence those cuts.
+- **`SRF > 0` is unusable as a trigger.** 397 of 785 business days
+  (2023-09 → 2026-09) are nonzero and most are single-digit millions, so it
+  would light up permanently. 35 days exceeded $1B and 16 exceeded $10B —
+  hence those cuts. (The cuts were first set on the Full-Allotment-only data,
+  which showed 10 and 7; after the fix the backtest still hits L3 in 2019-09
+  and 2020-03 and keeps 2021-2023 at zero L2+ days, and 2025 L3 days rose to
+  13 — the 2025-10/11 repo squeeze that was previously invisible.)
 - All four Z-score windows are still computed and stored so the dashboard can
   offer the period selector; only the 6M window drives the ladder.
 - **`None` is not `False`.** A signal that could not be evaluated (SRF fetch

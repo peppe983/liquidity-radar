@@ -86,10 +86,24 @@ SPREAD_DEFINITIONS = {
 META_SIGNAL_KEYS = {"pressure_signal_active", "pressure_data_complete"}
 
 
+def is_srf_operation(op: dict) -> bool:
+    """뉴욕 연은 레포 오퍼레이션 한 건이 SRF 사용인지 판별한다.
+
+    2021-07 SRF 도입 이후 연준의 레포 오퍼레이션(operationType=="Repo")은 전부 SRF다.
+    operationMethod로 거르면 안 된다 — 2025-12에 경매 방식이 "Multiple Price"에서
+    "Full Allotment"로 바뀌어서, Full Allotment만 세면 그 이전 사용액이 전부 0이 된다
+    (2025-10-31 $50.4B, 2025-06-30 $11.1B 등 $1B 이상 25일이 누락됐던 버그).
+    "Small Value Exercise"는 운영 점검용 소액 테스트라 실제 수요가 아니므로 뺀다.
+    """
+    if op.get("operationType") != "Repo":
+        return False
+    return "Small Value Exercise" not in (op.get("note") or "")
+
+
 def fetch_srf_usage(lookback_days: int = SRF_LOOKBACK_DAYS) -> dict | None:
     """뉴욕 연은 Markets API에서 최근 SRF(상시레포기구) 사용액을 가져온다.
 
-    SRF는 operationType=="Repo" AND operationMethod=="Full Allotment"로 식별한다.
+    SRF 식별은 is_srf_operation을 따른다.
     (API의 securityType=srf 파라미터는 실측 결과 항상 빈 배열을 반환해 쓸 수 없다.)
     하루에 여러 차례 오퍼레이션이 있을 수 있어 같은 날짜의 totalAmtAccepted를 합산한다.
 
@@ -151,9 +165,7 @@ def fetch_srf_by_date(
 
     by_date: dict[str, dict] = {}
     for op in operations:
-        if op.get("operationType") != "Repo":
-            continue
-        if op.get("operationMethod") != "Full Allotment":
+        if not is_srf_operation(op):
             continue
         date = op.get("operationDate")
         if not date:
@@ -457,11 +469,19 @@ def decompose_liquidity_change(
     핵심 — 기존 공식은 TGA·RRP를 똑같이 빼기만 해서 이 차이를 못 잡는다.
     """
     deltas: dict[str, float | None] = {}
+    # WALCL/WSHOMCB/WCURCIR는 대시보드의 요인 막대용이다. TREAST만 보면 MBS 상환이
+    # 국채 증가를 상쇄해 연준 총자산이 오히려 줄어든 달을 "연준이 돈을 풀었다"로
+    # 오해하게 된다(2026-09: TREAST +0.020, MBS −0.020, WALCL −0.012).
+    # 대차대조표 항등식 ΔWRESBAL = ΔWALCL − ΔTGA − ΔRRP − ΔWCURCIR − Δ기타 부채로
+    # 나머지는 잔차가 된다.
     columns = {
         "delta_treast_trillions": "TREAST",
         "delta_wtregen_trillions": "WTREGEN",
         "delta_rrpontsyd_trillions": "RRPONTSYD",
         "delta_wresbal_trillions": "WRESBAL",
+        "delta_walcl_trillions": "WALCL",
+        "delta_wshomcb_trillions": "WSHOMCB",
+        "delta_wcurcir_trillions": "WCURCIR",
     }
 
     for key, col in columns.items():
