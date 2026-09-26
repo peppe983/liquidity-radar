@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+.agents/
+
+# Claude Code 로컬 설정 — 개인 권한 설정이라 공유 대상 아님
+.claude/settings.local.json

@@ -1,0 +1,5 @@
+pandas>=2.0
+requests>=2.31
+
+# MCP 서버(mcp_server.py)용. 파이썬 3.10 이상이 필요해 프로젝트 전체를 3.12로 올렸다.
+mcp[cli]>=1.0

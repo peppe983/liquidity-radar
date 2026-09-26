@@ -1,0 +1,224 @@
+{
+  "schema_version": 2,
+  "generated_at": "2026-09-25T08:54:51Z",
+  "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}",
+  "as_of_date": "2026-09-25",
+  "series": {
+    "WALCL": {
+      "raw_value": 6747704.0,
+      "raw_unit": "millions_usd",
+      "normalized_value": 6.747704,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "weekly",
+      "is_forward_filled": true
+    },
+    "WTREGEN": {
+      "raw_value": 977084.0,
+      "raw_unit": "millions_usd",
+      "normalized_value": 0.977084,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "weekly",
+      "is_forward_filled": true
+    },
+    "RRPONTSYD": {
+      "raw_value": 0.63,
+      "raw_unit": "billions_usd",
+      "normalized_value": 0.00063,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-24",
+      "publication_frequency": "daily",
+      "is_forward_filled": true
+    },
+    "WRESBAL": {
+      "raw_value": 2930193.0,
+      "raw_unit": "millions_usd",
+      "normalized_value": 2.930193,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "weekly",
+      "is_forward_filled": true
+    },
+    "TREAST": {
+      "raw_value": 4558332.0,
+      "raw_unit": "millions_usd",
+      "normalized_value": 4.558332,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "weekly",
+      "is_forward_filled": true
+    },
+    "WSHOMCB": {
+      "raw_value": 1910409.0,
+      "raw_unit": "millions_usd",
+      "normalized_value": 1.910409,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "weekly",
+      "is_forward_filled": true
+    },
+    "WSHOSHO": {
+      "raw_value": 6471088.0,
+      "raw_unit": "millions_usd",
+      "normalized_value": 6.471088,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "weekly",
+      "is_forward_filled": true
+    },
+    "TLAACBW027SBOG": {
+      "raw_value": 25804.416,
+      "raw_unit": "billions_usd",
+      "normalized_value": 25.804416,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-09",
+      "publication_frequency": "weekly",
+      "is_forward_filled": true
+    },
+    "DFII10": {
+      "raw_value": 2.76,
+      "raw_unit": "percent",
+      "normalized_value": 2.76,
+      "normalized_unit": "percent",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "daily",
+      "is_forward_filled": true
+    },
+    "DTWEXBGS": {
+      "raw_value": 119.5133,
+      "raw_unit": "index",
+      "normalized_value": 119.5133,
+      "normalized_unit": "index",
+      "observation_date": "2026-09-18",
+      "publication_frequency": "daily",
+      "is_forward_filled": true
+    },
+    "SOFR": {
+      "raw_value": 3.87,
+      "raw_unit": "percent",
+      "normalized_value": 3.87,
+      "normalized_unit": "percent",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "daily",
+      "is_forward_filled": true
+    },
+    "IORB": {
+      "raw_value": 3.9,
+      "raw_unit": "percent",
+      "normalized_value": 3.9,
+      "normalized_unit": "percent",
+      "observation_date": "2026-09-25",
+      "publication_frequency": "daily",
+      "is_forward_filled": false
+    },
+    "WCURCIR": {
+      "raw_value": 2482200.0,
+      "raw_unit": "millions_usd",
+      "normalized_value": 2.4822,
+      "normalized_unit": "trillions_usd",
+      "observation_date": "2026-09-23",
+      "publication_frequency": "weekly",
+      "is_forward_filled": true
+    },
+    "SP500": {
+      "raw_value": 7704.13,
+      "raw_unit": "index",
+      "normalized_value": 7704.13,
+      "normalized_unit": "index",
+      "observation_date": "2026-09-24",
+      "publication_frequency": "daily",
+      "is_forward_filled": true
+    }
+  },
+  "derived": {
+    "net_liquidity_trillions": 5.76999,
+    "net_liquidity_30d_change_trillions": -0.025764999999999816,
+    "walcl_wow_change_trillions": 0.0011559999999999349,
+    "reserves_trillions": 2.930193,
+    "fed_ust_holdings_trillions": 4.558332,
+    "fed_mbs_holdings_trillions": 1.910409
+  },
+  "warnings": [
+    "WALCL: forward-filled from 2026-09-23",
+    "WTREGEN: forward-filled from 2026-09-23",
+    "RRPONTSYD: forward-filled from 2026-09-24",
+    "WRESBAL: forward-filled from 2026-09-23",
+    "TREAST: forward-filled from 2026-09-23",
+    "WSHOMCB: forward-filled from 2026-09-23",
+    "WSHOSHO: forward-filled from 2026-09-23",
+    "TLAACBW027SBOG: forward-filled from 2026-09-09",
+    "DFII10: forward-filled from 2026-09-23",
+    "DTWEXBGS: forward-filled from 2026-09-18",
+    "SOFR: forward-filled from 2026-09-23",
+    "WCURCIR: forward-filled from 2026-09-23",
+    "SP500: forward-filled from 2026-09-24"
+  ],
+  "pressure": {
+    "as_of_date": "2026-09-25",
+    "spreads_bp": {
+      "sofr_minus_iorb": -3.0
+    },
+    "zscore": {
+      "sofr_minus_iorb": {
+        "2M": -0.8792,
+        "6M": -0.1047,
+        "1Y": -0.6075,
+        "2Y": -0.0769
+      }
+    },
+    "zscore_undefined_reason": {},
+    "zscore_window_default": "6M",
+    "zscore_threshold": 2.0,
+    "srf_usage": {
+      "operation_date": "2026-09-24",
+      "total_accepted_usd": 1000000.0,
+      "total_accepted_trillions": 1e-06,
+      "operation_count": 2,
+      "source": "https://markets.newyorkfed.org/api/rp/results/search.json"
+    },
+    "signals": {
+      "sofr_minus_iorb_zscore_triggered": false,
+      "srf_usage_nonzero": true,
+      "pressure_signal_active": true,
+      "pressure_data_complete": true
+    },
+    "level": 0,
+    "level_label": "L0",
+    "level_reasons": [],
+    "level_data_complete": true,
+    "thresholds": {
+      "spread_bp": {
+        "watch": 5.0,
+        "elevated": 15.0,
+        "critical": 30.0
+      },
+      "srf_usd": {
+        "elevated": 1000000000.0,
+        "critical": 10000000000.0
+      },
+      "persistence": "2/3d"
+    }
+  },
+  "assessment": {
+    "as_of_date": "2026-09-25",
+    "net_liquidity_30d_change_trillions": -0.025764999999999816,
+    "quantity_direction": "down",
+    "quantity_deadzone_trillions": 0.0147,
+    "pressure_level": 0,
+    "status": "watch",
+    "status_reasons": [
+      "no_pressure",
+      "quantity_down"
+    ],
+    "decomposition": {
+      "window_days": 30,
+      "delta_treast_trillions": 0.020044000000000395,
+      "delta_wtregen_trillions": 0.013133999999999979,
+      "delta_rrpontsyd_trillions": 0.00038,
+      "delta_wresbal_trillions": -0.013866000000000156,
+      "primary_driver": "QE",
+      "interpretation": "mixed_or_other"
+    }
+  }
+}
