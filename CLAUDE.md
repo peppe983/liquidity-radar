@@ -166,6 +166,10 @@ relationship is regime-dependent and breaks down in crises.
   just Thursdays: Thursday's run catches the H.4.1 release, and the other days
   keep the daily pressure series (SOFR/RRP/SRF) fresh — a Thursday-only run
   would surface a quarter-end repo spike up to a week late.
+- **FRED can publish future-dated rows.** `IORB` (an administered rate) is
+  posted for the next business day in advance. `align_daily` caps its end at
+  today (UTC); without that, a Saturday run set `as_of` to the following
+  Monday and ffilled every other series onto a date that hadn't happened.
 - **Regime sensitivity:** don't hardcode absolute thresholds for
   warning/healthy classification — use Z-scores with a selectable lookback
   window (2M/6M/1Y/2Y), since the same raw values mean different things in

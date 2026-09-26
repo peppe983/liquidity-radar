@@ -180,6 +180,12 @@ def align_daily(normalized: dict[str, pd.Series]) -> pd.DataFrame:
 
     start = min(s.index.min() for s in normalized.values())
     end = max(s.index.max() for s in normalized.values())
+    # IORB처럼 정책금리 시리즈는 FRED에 다음 영업일 값이 미리 올라와 있다.
+    # 이를 그대로 끝점으로 쓰면 as_of가 미래(예: 토요일 실행 시 월요일)가 되고
+    # 나머지 시리즈가 전부 그 날짜까지 ffill돼 압력 판정이 가짜 날짜 기준이 된다.
+    # 실제 발생: 2026-09-26(토) Actions 실행이 as_of=2026-09-28을 커밋함.
+    today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
+    end = min(end, today)
     business_days = pd.date_range(start=start, end=end, freq="B")
 
     aligned = {}
