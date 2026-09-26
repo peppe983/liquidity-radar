@@ -22,7 +22,8 @@ Steps 1–3 of the 6-step roadmap are implemented and step 5 is in progress.
 - **Step 5 (dashboard)** — in progress, done ahead of step 4 so the news
   output has somewhere to live. Split into 5-0 repo on GitHub
   (`peppe983/liquidity-radar`, public) ✅, 5-1 `history.json` ✅, 5-2 GitHub
-  Actions auto-update (`.github/workflows/update.yml`) ✅, 5-3 dashboard page,
+  Actions auto-update (`.github/workflows/update.yml`) ✅, 5-3 dashboard page
+  (designed first in Claude Design from [doc/design-brief.md](doc/design-brief.md), then built),
   5-4 GitHub Pages deploy.
 - **Steps 4 and 6 (news pipeline, testing/polish)** — not started.
 
@@ -75,7 +76,12 @@ layer that existing trackers lack. Planned architecture:
   **business-daily** values (~176KB). Daily, not weekly: weekly sampling drops
   the quarter-end repo spikes outright — the +32bp reading on 2025-10-31 would
   simply vanish, and the pressure chart would look calm through a real stress
-  episode.
+  episode. It also carries per-day `srf_usd`, `sofr_minus_iorb_z6m` and
+  `pressure_level`, recomputed with the same `classify_pressure_level` that
+  grades today (via `assess.pressure_level_history`), so the dashboard's
+  timeline can never disagree with the headline badge. SRF history and today's
+  SRF value come from one NY Fed request; if it fails, `srf_usd` is **omitted**
+  (with a `warnings` entry), never zero-filled.
 - **Charts are JSON → web chart, not static PNG** — data is shipped as JSON
   and rendered client-side so it stays interactive.
 - **News layer** (the actual differentiator vs. existing trackers): classify

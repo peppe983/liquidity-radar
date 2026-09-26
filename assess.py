@@ -99,6 +99,37 @@ def fetch_srf_usage(lookback_days: int = SRF_LOOKBACK_DAYS) -> dict | None:
     """
     end = pd.Timestamp.utcnow().normalize()
     start = end - timedelta(days=lookback_days)
+    by_date = fetch_srf_by_date(start, end)
+    if by_date is None:
+        return None
+    if not by_date:
+        log.warning("SRF 오퍼레이션이 조회 기간(%d일) 내에 없습니다", lookback_days)
+        return None
+    return latest_srf_result(by_date)
+
+
+def latest_srf_result(by_date: dict[str, dict]) -> dict | None:
+    """fetch_srf_by_date 결과에서 가장 최근 날짜의 사용액을 latest.json 형태로 뽑는다."""
+    if not by_date:
+        return None
+    latest_date = max(by_date)
+    bucket = by_date[latest_date]
+    return {
+        "operation_date": latest_date,
+        "total_accepted_usd": bucket["total"],
+        "total_accepted_trillions": bucket["total"] / 1e12,
+        "operation_count": bucket["count"],
+        "source": NYFED_REPO_SEARCH_URL,
+    }
+
+
+def fetch_srf_by_date(
+    start: pd.Timestamp, end: pd.Timestamp
+) -> dict[str, dict] | None:
+    """기간 내 SRF 사용액을 날짜별로 합산해 {"YYYY-MM-DD": {"total", "count"}}로 반환한다.
+
+    조회 실패는 None, 조회는 됐지만 오퍼레이션이 없으면 빈 dict다 (둘을 섞지 않는다).
+    """
     params = {
         "startDate": start.strftime("%Y-%m-%d"),
         "endDate": end.strftime("%Y-%m-%d"),
@@ -131,19 +162,7 @@ def fetch_srf_usage(lookback_days: int = SRF_LOOKBACK_DAYS) -> dict | None:
         bucket["total"] += float(op.get("totalAmtAccepted") or 0.0)
         bucket["count"] += 1
 
-    if not by_date:
-        log.warning("SRF 오퍼레이션이 조회 기간(%d일) 내에 없습니다", lookback_days)
-        return None
-
-    latest_date = max(by_date)
-    bucket = by_date[latest_date]
-    return {
-        "operation_date": latest_date,
-        "total_accepted_usd": bucket["total"],
-        "total_accepted_trillions": bucket["total"] / 1e12,
-        "operation_count": bucket["count"],
-        "source": NYFED_REPO_SEARCH_URL,
-    }
+    return by_date
 
 
 def compute_spread_bp(
@@ -342,6 +361,43 @@ def classify_pressure_level(
         "data_complete": complete,
         "sofr_minus_iorb_bp": None if sofr_now is None else round(sofr_now, 2),
     }
+
+
+def pressure_level_history(
+    df: pd.DataFrame,
+    dates: pd.DatetimeIndex,
+    srf_by_date: dict[str, dict] | None,
+) -> tuple[list[int | None], list[float | None]]:
+    """날짜마다 압력 사다리를 다시 돌려 (단계, 6M Z-score) 목록을 만든다.
+
+    대시보드의 "압력 단계 타임라인"용. 판정은 오늘 값과 똑같이 classify_pressure_level을
+    쓴다 — 별도 로직을 두면 타임라인과 오늘 배지가 서로 다른 말을 할 수 있다.
+
+    srf_by_date가 None(조회 실패)이면 SRF 조건은 판정하지 않는다. 조회는 됐는데
+    그날 기록이 없으면 사용액 0으로 본다. 스프레드 자체가 없는 날은 단계를 None으로 둔다.
+    """
+    window = ZSCORE_WINDOWS[DEFAULT_ZSCORE_WINDOW]
+    spread = compute_spread_bp(df, "SOFR", "IORB")
+    if spread is None:
+        return [None] * len(dates), [None] * len(dates)
+    zser = compute_zscore(spread, window)
+
+    levels: list[int | None] = []
+    zscores: list[float | None] = []
+    for d in dates:
+        z = zser.get(d)
+        z = None if z is None or pd.isna(z) else float(z)
+        zscores.append(None if z is None else round(z, 3))
+        if pd.isna(spread.get(d)):
+            levels.append(None)
+            continue
+        if srf_by_date is None:
+            srf = None
+        else:
+            srf = srf_by_date.get(d.strftime("%Y-%m-%d"), {}).get("total", 0.0)
+        ztable = {"sofr_minus_iorb": {DEFAULT_ZSCORE_WINDOW: z}}
+        levels.append(classify_pressure_level(df, d, srf, ztable)["level"])
+    return levels, zscores
 
 
 def quantity_direction(

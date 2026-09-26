@@ -296,7 +296,11 @@ def latest_snapshot(df: pd.DataFrame, raw: dict[str, pd.Series]) -> dict:
     }
 
 
-def build_history(df: pd.DataFrame, years: int = HISTORY_YEARS) -> dict:
+def build_history(
+    df: pd.DataFrame,
+    srf_by_date: dict[str, dict] | None = None,
+    years: int = HISTORY_YEARS,
+) -> dict:
     """대시보드 차트가 읽을 시계열을 만든다.
 
     latest.json은 최신 스냅샷 하나뿐이라 선 그래프를 그릴 수 없다. 브라우저가
@@ -324,6 +328,21 @@ def build_history(df: pd.DataFrame, years: int = HISTORY_YEARS) -> dict:
             None if pd.isna(v) else round(float(v), 2) for v in spread
         ]
 
+    # 압력 탭 차트용: 날짜별 SRF 사용액, 6M Z-score, 사다리 단계.
+    # SRF 조회에 실패하면 srf_usd를 아예 싣지 않는다 — 0으로 채우면 "사용 없음"으로
+    # 읽히는데, SRF는 0이어도 안심할 수 없는 지표라 "모름"과 섞이면 안 된다.
+    warnings: list[str] = []
+    if srf_by_date is None:
+        warnings.append("SRF 이력을 조회하지 못해 srf_usd를 생략했습니다")
+    else:
+        derived["srf_usd"] = [
+            round(srf_by_date.get(d.strftime("%Y-%m-%d"), {}).get("total", 0.0))
+            for d in window.index
+        ]
+    levels, zscores = assess.pressure_level_history(df, window.index, srf_by_date)
+    derived["sofr_minus_iorb_z6m"] = zscores
+    derived["pressure_level"] = levels
+
     return {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -340,6 +359,7 @@ def build_history(df: pd.DataFrame, years: int = HISTORY_YEARS) -> dict:
         "dates": [d.strftime("%Y-%m-%d") for d in window.index],
         "series": series,
         "derived": derived,
+        "warnings": warnings,
     }
 
 
@@ -369,8 +389,11 @@ def main() -> int:
 
     # 2단계: 압력 지표 + 종합 판단. SRF는 FRED가 아닌 뉴욕 연은 API에서 오므로
     # 여기서 따로 조회한다 (실패해도 None으로 흘려보내고 파이프라인은 계속).
+    # SRF는 history.json 차트용 이력까지 한 번에 받고, 오늘 값은 거기서 뽑는다.
     as_of = derived.index.max()
-    srf_result = assess.fetch_srf_usage()
+    srf_start = as_of - pd.DateOffset(years=HISTORY_YEARS, days=7)
+    srf_by_date = assess.fetch_srf_by_date(srf_start, as_of)
+    srf_result = None if srf_by_date is None else assess.latest_srf_result(srf_by_date)
     pressure, assessment, assess_warnings = assess.build_sections(
         derived, as_of, srf_result
     )
@@ -380,7 +403,7 @@ def main() -> int:
 
     write_latest_json(snapshot, LATEST_JSON_PATH)
 
-    history = build_history(derived)
+    history = build_history(derived, srf_by_date)
     write_latest_json(history, HISTORY_JSON_PATH)
 
     log.info(
