@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-Steps 1–3 of the 6-step roadmap are implemented; the rest is not started.
+Steps 1–3 of the 6-step roadmap are implemented and step 5 is in progress.
 
 - **Step 0 (research)** — done: [doc/research.md](doc/research.md) (Korean).
 - **Step 1 (data pipeline)** — done: `update.py` fetches FRED series,
@@ -19,7 +19,12 @@ Steps 1–3 of the 6-step roadmap are implemented; the rest is not started.
   duplicating them, and caches the fetched DataFrame for an hour because a cold
   FRED pull takes ~10s. Registered locally with
   `claude mcp add liquidity -- <venv>/bin/python <repo>/mcp_server.py`.
-- **Steps 4–6 (news pipeline, dashboard, testing/polish)** — not started.
+- **Step 5 (dashboard)** — in progress, done ahead of step 4 so the news
+  output has somewhere to live. Split into 5-0 repo on GitHub
+  (`peppe983/liquidity-radar`, public) ✅, 5-1 `history.json` ✅, 5-2 GitHub
+  Actions auto-update (`.github/workflows/update.yml`) ✅, 5-3 dashboard page,
+  5-4 GitHub Pages deploy.
+- **Steps 4 and 6 (news pipeline, testing/polish)** — not started.
 
 There is no test framework yet; verification is done by running the script
 and cross-checking values against the source websites (see Commands).
@@ -156,8 +161,11 @@ relationship is regime-dependent and breaks down in crises.
 - **Publication frequency mismatch:** WALCL and WTREGEN are weekly
   (WALCL: Thursday H.4.1 release, ~21:30 UTC); RRPONTSYD is daily. Reindex
   to business days and forward-fill (`ffill`) the weekly series rather than
-  downsampling the daily one. Schedule the update cron for ~22:00 UTC
-  Thursdays to catch the H.4.1 release.
+  downsampling the daily one. The update cron
+  (`.github/workflows/update.yml`) runs at 22:00 UTC **every weekday**, not
+  just Thursdays: Thursday's run catches the H.4.1 release, and the other days
+  keep the daily pressure series (SOFR/RRP/SRF) fresh — a Thursday-only run
+  would surface a quarter-end repo spike up to a week late.
 - **Regime sensitivity:** don't hardcode absolute thresholds for
   warning/healthy classification — use Z-scores with a selectable lookback
   window (2M/6M/1Y/2Y), since the same raw values mean different things in

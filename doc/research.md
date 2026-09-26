@@ -227,7 +227,7 @@ Net Liquidity = WALCL − TGA − RRP
 ## 6. 설계 요구사항 (개념 정리에서 도출)
 
 1. **발표 주기 불일치 처리** — WALCL·TGA(WTREGEN) 주간, RRP 영업일. `reindex` + `ffill`
-2. **갱신 타이밍** — H.4.1 목요일 21:30 UTC 발표 → cron은 22:00 UTC
+2. **갱신 타이밍** — H.4.1 목요일 21:30 UTC 발표 → cron은 22:00 UTC. 목요일만이 아니라 **평일 매일** 실행한다 (일간 압력 지표 SOFR/RRP/SRF를 매일 반영하기 위해. 5-2에서 결정)
 3. **대시보드 2구역 구성**
    - 상단 "수위" 패널: Net Liquidity, WRESBAL 추이와 변화량
    - 하단 "경고등" 패널: 스프레드 이탈 여부, SRF 사용
