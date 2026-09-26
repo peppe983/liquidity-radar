@@ -7,3 +7,8 @@ venv/
 
 # Claude Code 로컬 설정 — 개인 권한 설정이라 공유 대상 아님
 .claude/settings.local.json
+
+# Claude Code 스킬 — 개인 작업 도구라 프로젝트 코드가 아님.
+# .claude/skills/*는 .agents/(위에서 제외)를 가리키는 심볼릭 링크라 올려도 깨진다.
+.claude/skills/
+skills-lock.json
