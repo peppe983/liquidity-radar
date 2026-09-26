@@ -1,0 +1,19 @@
+/* 사이트 전용 보정. 디자인 시스템(tokens.css, bundle.css)은 건드리지 않고 여기서만 덧붙인다. */
+
+/* bundle.css의 `[hidden] { display: none; }`은 `.lr-page { display: grid; }`보다 약해서
+   숨긴 탭 패널이 그대로 보인다. 한 페이지에 탭 4개를 합치면서 생긴 문제라 여기서 이긴다. */
+[hidden] { display: none !important; }
+
+/* 스크린리더 전용 */
+.lr-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* 알아두기 탭 Z-score 사례 표 — lr-matrix와 같은 글자 크기·색 규칙 */
+.lr-ztable { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 22px; }
+.lr-ztable th { font-weight: 600; color: var(--ink-muted); text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line-strong); }
+.lr-ztable td { text-align: right; padding: 8px; border-bottom: 1px solid var(--line); }
+.lr-ztable th:first-child, .lr-ztable td:first-child { text-align: left; }
+.lr-ztable tr:last-child td { border-bottom: 0; }
+
+/* 데이터를 받기 전에는 차트 자리를 비워 두되 높이는 잡아 레이아웃이 튀지 않게 한다 */
+[data-chart]:empty { min-height: 320px; }
+.lr-multiples [data-chart]:empty { min-height: 140px; }

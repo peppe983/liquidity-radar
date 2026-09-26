@@ -1,0 +1,43 @@
+<!-- @dsCard group="요약" height=260 -->
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PressureTimeline — preview</title>
+<style>html,body{margin:0;background:var(--surface);} .pad{padding:16px;}</style></head>
+<body class="lr-root">
+<div class="pad"><section class="lr-card" aria-labelledby="t-t">
+<div class="lr-card__head"><h2 class="lr-card__title" id="t-t">압력 단계 타임라인</h2><span class="lr-caption">최근 3년 · 마우스를 올리면 날짜와 단계</span></div>
+<div class="lr-timeline" id="tl" data-demo="1"><div class="lr-tip" id="tl-tip" hidden></div></div>
+<div class="lr-legend" style="margin-top:8px"><span><i style="height:4px;background:var(--pressure-0)"></i>L0 정상</span><span><i style="height:8px;background:var(--pressure-1)"></i>L1 주의</span><span><i style="height:12px;background:var(--pressure-2)"></i>L2 경계</span><span><i style="height:16px;background:var(--pressure-3)"></i>L3 심각</span></div>
+<p class="lr-card__note">대부분의 날은 L0입니다. 압력은 분기말·월말 부근에 짧게 튀며, 2025년 10월 말과 12월 말이 가장 강했습니다.</p>
+</section></div>
+<script>
+(function(){
+var EV=[["2024-09-30", 1], ["2024-10-01", 2], ["2024-12-31", 1], ["2025-06-30", 3], ["2025-07-01", 2], ["2025-09-15", 2], ["2025-09-16", 1], ["2025-09-30", 2], ["2025-10-01", 2], ["2025-10-30", 3], ["2025-10-31", 3], ["2025-11-03", 2], ["2025-11-28", 2], ["2025-12-01", 3], ["2025-12-30", 3], ["2025-12-31", 3], ["2026-01-02", 2], ["2026-03-31", 2]], S=new Date("2023-09-25"), E=new Date("2026-09-25"), NAMES=["L0 정상","L1 주의","L2 경계","L3 심각"];
+var box=document.getElementById("tl"), tip=document.getElementById("tl-tip"), NS="http://www.w3.org/2000/svg";
+function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+function draw(){
+ var W=box.clientWidth, H=96, top=8, base=64, span=E-S; var svg=box.querySelector("svg"); if(svg) svg.remove();
+ svg=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"최근 3년 압력 단계. 대부분 L0, 분기말 부근 L1~L3. 가장 강한 날 2025-10-31, 2025-12-31(L3)."});
+ var X=function(d){return (new Date(d)-S)/span*W;};
+ [2024,2025,2026].forEach(function(y){var x=X(y+"-01-01");svg.appendChild(el("line",{class:"t-grid",x1:x,x2:x,y1:top,y2:base+6}));var t=el("text",{class:"t-tick",x:x+4,y:base+22});t.textContent=y+"";svg.appendChild(t);});
+ svg.appendChild(el("rect",{class:"t-base",x:0,y:base-4,width:W,height:4}));
+ var hs=[0,18,34,52];
+ EV.forEach(function(e){var x=X(e[0]),h=hs[e[1]];svg.appendChild(el("rect",{class:"t-l"+e[1],x:x-2,y:base-4-h,width:4,height:h}));});
+ var nx=W-1; svg.appendChild(el("rect",{class:"t-now",x:nx-1,y:base-10,width:2,height:14}));
+ var nt=el("text",{class:"t-now",x:nx,y:base+22,"text-anchor":"end"});nt.textContent="지금 L0";svg.appendChild(nt);
+ var cross=el("line",{class:"t-cross",x1:0,x2:0,y1:top,y2:base+4,visibility:"hidden"});svg.appendChild(cross);
+ box.insertBefore(svg,tip);
+ function show(px){var d=new Date(+S+px/W*span),best=null,bd=1e15;EV.forEach(function(e){var dd=Math.abs(new Date(e[0])-d);if(dd<bd){bd=dd;best=e;}});
+  var lv=0,ds=d.toISOString().slice(0,10),x=px; if(best&&bd<4*864e5){lv=best[1];ds=best[0];x=X(best[0]);}
+  cross.setAttribute("x1",x);cross.setAttribute("x2",x);cross.setAttribute("visibility","visible");
+  tip.hidden=false;tip.style.left=(x>W-200?x-188:x+10)+"px";tip.style.top=top+"px";
+  tip.innerHTML="<b>"+ds+"</b>압력 "+NAMES[lv]; }
+ svg.addEventListener("mousemove",function(ev){var r=svg.getBoundingClientRect();show(ev.clientX-r.left);});
+ svg.addEventListener("mouseleave",function(){cross.setAttribute("visibility","hidden");tip.hidden=true;});
+ if(box.dataset.demo) show(X("2025-12-31"));
+}
+draw(); window.addEventListener("resize",draw);
+})();
+</script>
+</body>
+</html>

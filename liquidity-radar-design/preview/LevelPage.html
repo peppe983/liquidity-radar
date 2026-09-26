@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head><link rel="stylesheet" href="../design-system/tokens.css"><link rel="stylesheet" href="../design-system/components/bundle.css"><script src="../design-system/components/bundle.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>수위 탭</title>
+<style>html,body{margin:0;background:var(--surface);} .pad{padding:16px;}</style></head>
+<body class="lr-root">
+<header class="lr-header"><div class="lr-header__in">
+<div class="lr-header__top">
+ <div class="lr-brand"><span class="lr-brand__name"><svg class="lr-brand__mark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M3 17a14 14 0 0 1 14-14"/><path d="M3 17a9 9 0 0 1 9-9" opacity=".7"/><path d="M3 17a4 4 0 0 1 4-4" opacity=".45"/><circle cx="3.2" cy="16.8" r="1.4" fill="currentColor" stroke="none"/></svg>Liquidity Radar</span><span class="lr-brand__sub">미국 달러 유동성 대시보드</span></div>
+ <div class="lr-meta"><span>기준일 <b>2026-09-25 (금)</b></span><span>2026-09-26 18:31 KST 자동 갱신</span><span>출처 FRED · 뉴욕 연은</span></div>
+</div>
+<nav class="lr-tabs" role="tablist" aria-label="탭"><button class="lr-tab" role="tab" aria-selected="false">요약</button><button class="lr-tab" role="tab" aria-selected="true">수위</button><button class="lr-tab" role="tab" aria-selected="false">압력</button><button class="lr-tab" role="tab" aria-selected="false">알아두기</button></nav>
+</div></header><main class="lr-page" data-lr-scope><p class="lr-tabintro"><b>물이 얼마나 있나.</b> 시장에 풀린 달러의 양을 봅니다. 차트를 하나씩 골라 보세요.</p><div class="lr-toolbar">
+<div class="lr-toolbar__group"><div class="lr-chips" role="group" aria-label="차트 고르기" data-lr-sub><button class="lr-chip" data-value="nl" aria-pressed="true">Net Liquidity</button><button class="lr-chip" data-value="res" aria-pressed="false">지급준비금</button><button class="lr-chip" data-value="four" aria-pressed="false">네 지표 한눈에</button><button class="lr-chip" data-value="stack" aria-pressed="false">연준 부채 구성</button><button class="lr-chip" data-value="ratio" aria-pressed="false">지급준비금이 충분한가</button><button class="lr-chip" data-value="spx" aria-pressed="false">주가와 비교</button><button class="lr-chip" data-value="wrong" aria-pressed="false">이렇게 계산하면 틀려요</button></div></div>
+<div class="lr-toolbar__group lr-toolbar__right" data-lr-periodwrap><button class="lr-toggle" type="button" aria-pressed="false" data-lr-overlay title="차트 아래에 S&amp;P 500을 같은 기간으로 붙여 봅니다"><i aria-hidden="true"></i>S&amp;P 500 비교</button><span class="lr-toolbar__label">기간</span><div class="lr-chips" role="group" aria-label="기간" data-lr-period><button class="lr-chip" data-value="6m" aria-pressed="false">6개월</button><button class="lr-chip" data-value="1y" aria-pressed="true">1년</button><button class="lr-chip" data-value="3y" aria-pressed="false">3년</button></div></div>
+</div><div data-panel="nl">
+<section class="lr-card"><h2 class="lr-panel-title">Net Liquidity</h2><p class="lr-panel-q">연준이 푼 돈 중 시장에 남아 있는 몫은 늘고 있나, 줄고 있나?</p><div class="lr-formula" role="math"><span class="lr-term">연준 총자산 <b>6.75</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-tga)"></i>TGA <b>0.98</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-rrp)"></i>RRP <b>0.001</b></span><span class="lr-op">=</span><span class="lr-term lr-term--result"><i style="background:var(--series-netliq)"></i>Net Liquidity <b>5.77조$</b></span></div><div data-chart="nl"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>연준이 푼 돈(총자산)에서 정부 금고(TGA)와 역레포(RRP)에 묶인 돈을 뺀 값입니다. 시장에 풀려 있는 달러의 대략적인 수위입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>절대 수준보다 <b>방향</b>이 중요합니다. 최근 3년 범위는 5.60~6.41조$이고, 지금 5.77조$는 그 아래쪽입니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>현금(유통화폐 2.48조$)이 섞여 있어 항상 크게 나옵니다. 은행 시스템 안의 돈만 보려면 “지급준비금” 차트를 보세요.</p></div>
+</div></div>
+</div><div data-panel="res" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">지급준비금 (더 정확한 버전)</h2><p class="lr-panel-q">Net Liquidity에서 현금을 빼면, 은행이 실제로 쓸 수 있는 돈은 얼마인가?</p><div class="lr-formula" role="math"><span class="lr-term"><i style="background:var(--series-netliq)"></i>Net Liquidity <b>5.77</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-currency)"></i>유통화폐 <b>2.48</b></span><span class="lr-op">=</span><span class="lr-term lr-term--result"><i style="background:var(--series-reserves)"></i>지급준비금 <b>2.93</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-other)"></i>기타 <b>0.36</b></span></div><div data-chart="res"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>은행이 연준에 맡겨 둔 돈입니다. 은행끼리 결제하고 단기자금을 빌려주는 데 쓰는, 유동성의 실제 연료입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>두 선의 간격이 거의 일정합니다. 유통화폐가 3년간 2.32~2.48조$로 거의 고정이기 때문입니다. 방향은 같고 수준만 다릅니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>기타(0.36조$)는 여러 작은 부채의 합이라 가끔 따로 움직입니다. 그 주에는 두 선의 간격이 잠깐 벌어질 수 있습니다.</p></div>
+</div></div>
+</div><div data-panel="four" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">네 지표 한눈에</h2><p class="lr-panel-q">수위를 이루는 네 숫자는 각각 어떻게 움직였나?</p><div class="lr-multiples"><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-netliq)"></i>Net Liquidity</span><span class="lr-caption">지금 <b>5.77조$</b></span></div><div data-chart="m-nl"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-reserves)"></i>지급준비금</span><span class="lr-caption">지금 <b>2.93조$</b></span></div><div data-chart="m-res"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-tga)"></i>TGA (정부 금고)</span><span class="lr-caption">지금 <b>0.98조$</b></span></div><div data-chart="m-tga"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-rrp)"></i>RRP (역레포)</span><span class="lr-caption">지금 <b>0.001조$</b></span></div><div data-chart="m-rrp"></div></div></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>수위를 이루는 네 지표를 작은 차트 네 개로 나란히 놓았습니다. 각 차트는 자기 눈금을 씁니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>핵심은 RRP입니다. 1.44조$에서 0.001조$로 사실상 사라졌습니다. TGA는 세금과 국채 발행에 따라 0.30~1.01조$ 사이에서 톱니처럼 움직입니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>네 차트의 세로 눈금이 서로 다릅니다. 차트끼리 높이를 직접 비교하지 마세요. 기간을 3년으로 바꾸면 RRP의 궤적이 가장 잘 보입니다.</p></div>
+</div></div>
+</div><div data-panel="stack" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">연준 부채 구성</h2><p class="lr-panel-q">연준이 푼 돈은 어디에 쌓여 있나?</p><div class="lr-formula" role="math"><span class="lr-term">연준 총자산 <b>6.75</b></span><span class="lr-op">=</span><span class="lr-term"><i style="background:var(--series-reserves)"></i>지급준비금 <b>2.93</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-currency)"></i>유통화폐 <b>2.48</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-tga)"></i>TGA <b>0.98</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-rrp)"></i>RRP <b>0.001</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-other)"></i>기타 <b>0.36</b></span></div><div data-chart="stack"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>연준 대차대조표의 부채 쪽을 층으로 쌓은 그림입니다. 맨 위 높이가 연준 총자산입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>노란 RRP 층이 3년 사이에 사라졌습니다. 전체 높이는 양적긴축으로 낮아졌다가 최근 다시 조금 올랐습니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>누적 차트는 맨 아래 층만 바닥이 평평해 정확히 읽힙니다. 위층의 크기는 마우스를 올려 툴팁으로 확인하세요.</p></div>
+</div></div>
+</div><div data-panel="ratio" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">지급준비금이 충분한가</h2><p class="lr-panel-q">은행 자산 대비 지급준비금 비율은 얼마나 여유 있나?</p><div class="lr-formula" role="math"><span class="lr-term"><i style="background:var(--series-reserves)"></i>지급준비금 <b>2.93</b></span><span class="lr-op">÷</span><span class="lr-term">은행 총자산 <b>25.7</b></span><span class="lr-op">=</span><span class="lr-term lr-term--result"><i style="background:var(--series-reserves)"></i>비율 <b>11.4%</b></span></div><div data-chart="ratio"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>은행이 가진 전체 자산 가운데 지급준비금이 차지하는 비중입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>지금 11.4%입니다. 이 비율이 낮아질수록 은행이 현금을 아끼게 되고, 단기자금 금리가 튀기 쉬워집니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>“충분하다”의 정해진 기준선은 없습니다. 한 숫자로 판단하지 말고 추세와 압력 탭을 같이 보세요.</p></div>
+</div></div>
+</div><div data-panel="spx" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">주가와 비교</h2><p class="lr-panel-q">유동성과 주가는 같이 움직이고 있나?</p><div data-chart="spx"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>Net Liquidity와 S&amp;P 500을 둘 다 기간 시작일=100으로 바꿔 한 축에 놓았습니다. 단위가 달라 두 축을 겹치는 대신 이렇게 맞춥니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>최근 6개월 기준 유동성 99.0, 주가 117.6입니다. 주가가 유동성보다 훨씬 앞서 있습니다. 기간을 바꾸면 시작점이 바뀌어 숫자도 달라집니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>이 그림은 인과가 아니라 동행 여부만 보여줍니다. 둘의 선후 관계는 시기에 따라 자주 깨집니다.</p></div>
+</div></div>
+</div><div data-panel="wrong" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">이렇게 계산하면 틀려요</h2><p class="lr-panel-q">자주 보이는 “지급준비금 − TGA − RRP” 계산은 왜 틀렸나?</p><div class="lr-formula" role="math"><span class="lr-term"><i style="background:var(--series-reserves)"></i>지급준비금 <b>2.93</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-tga)"></i>TGA <b>0.98</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-rrp)"></i>RRP <b>0.001</b></span><span class="lr-op">=</span><span class="lr-term"><b>1.95</b> ✕ 이중 차감</span></div><div data-chart="wrong"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>인터넷에서 자주 보이는 잘못된 유동성 계산입니다. 점선이 그 결과이고, 실선 두 개가 올바른 값입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>점선은 올바른 두 선보다 늘 한참 아래에 있고, TGA가 움직일 때마다 엉뚱하게 흔들립니다.</p></div>
+<div class="lr-explain__card lr-explain__card--caution"><h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>주의</h3><p>지급준비금에는 애초에 TGA·RRP가 들어 있지 않습니다. 여기서 또 빼면 같은 돈을 두 번 빼는 계산이 됩니다. 빼기는 연준 총자산에서 해야 합니다.</p></div>
+</div></div>
+</div></main>
+<script>
+
+var LR=window.LiquidityRadar, W=LR.demo.weekly, F=LR.fmt;
+var wrong=W.reserves.map(function(r,i){return r-W.tga[i]-W.rrp[i];});
+var specs={
+ nl:{dates:W.dates,series:[{label:"Net Liquidity",color:"series-netliq",values:W.netliq}],fmt:F.tn,aria:"Net Liquidity 추이",demoAt:0.72},
+ res:{dates:W.dates,series:[{label:"Net Liquidity",color:"series-netliq",values:W.netliq},{label:"지급준비금",color:"series-reserves",values:W.reserves}],fmt:F.tn,aria:"Net Liquidity와 지급준비금"},
+ "m-nl":{dates:W.dates,mini:true,series:[{label:"Net Liquidity",color:"series-netliq",values:W.netliq}],fmt:F.tn},
+ "m-res":{dates:W.dates,mini:true,series:[{label:"지급준비금",color:"series-reserves",values:W.reserves}],fmt:F.tn},
+ "m-tga":{dates:W.dates,mini:true,series:[{label:"TGA",color:"series-tga",values:W.tga}],fmt:F.tn},
+ "m-rrp":{dates:W.dates,mini:true,includeZero:true,series:[{label:"RRP",color:"series-rrp",values:W.rrp}],fmt:F.tn},
+ stack:{dates:W.dates,stacked:true,series:[{label:"지급준비금",color:"series-reserves",values:W.reserves},{label:"유통화폐",color:"series-currency",values:W.currency},{label:"TGA",color:"series-tga",values:W.tga},{label:"RRP",color:"series-rrp",values:W.rrp},{label:"기타",color:"series-other",values:W.other}],fmt:F.tn,aria:"연준 부채 구성 누적"},
+ ratio:{dates:W.dates,series:[{label:"지급준비금 ÷ 은행 총자산",short:"비율",color:"series-reserves",values:W.ratio}],fmt:F.pct},
+ spx:{dates:W.dates,index100:true,overlay:false,series:[{label:"Net Liquidity",color:"series-netliq",values:W.netliq},{label:"S&P 500",color:"series-spx",values:W.spx}],fmt:F.idx,aria:"시작일=100 지수"},
+ wrong:{dates:W.dates,series:[{label:"Net Liquidity (올바름)",short:"Net Liquidity",color:"series-netliq",values:W.netliq},{label:"지급준비금 (올바름)",short:"지급준비금",color:"series-reserves",values:W.reserves},{label:"지급준비금 − TGA − RRP (틀림)",short:"틀린 계산",color:"series-other",dash:true,values:wrong}],fmt:F.tn}
+};
+document.querySelectorAll("[data-chart]").forEach(function(n){var s=specs[n.getAttribute("data-chart")]; if(s) LR.chart(n,s);});
+var scope=document.querySelector("[data-lr-scope]");
+var ovb=document.querySelector("[data-lr-overlay]"); LR.overlayToggle(ovb);
+LR.subtabs(document.querySelector("[data-lr-sub]"),scope,function(id){var off=(id==="four"||id==="spx"); ovb.setAttribute("aria-disabled",off?"true":"false"); ovb.title=off?(id==="spx"?"이 차트에는 이미 S&P 500이 있습니다":"작은 차트 네 개에는 붙이지 않습니다"):"차트 아래에 S&P 500을 같은 기간으로 붙여 봅니다";});
+LR.chips(document.querySelector("[data-lr-period]"),LR.setPeriod);
+if(true){ovb.click();}
+
+</script>
+</body>
+</html>

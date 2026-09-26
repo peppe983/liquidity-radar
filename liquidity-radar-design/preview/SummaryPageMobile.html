@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head><link rel="stylesheet" href="../design-system/tokens.css"><link rel="stylesheet" href="../design-system/components/bundle.css"><script src="../design-system/components/bundle.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>요약 탭 — 모바일 390</title>
+<style>html,body{margin:0;background:var(--surface);} .pad{padding:16px;}</style></head>
+<body class="lr-root">
+<header class="lr-header"><div class="lr-header__in">
+<div class="lr-header__top">
+ <div class="lr-brand"><span class="lr-brand__name"><svg class="lr-brand__mark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M3 17a14 14 0 0 1 14-14"/><path d="M3 17a9 9 0 0 1 9-9" opacity=".7"/><path d="M3 17a4 4 0 0 1 4-4" opacity=".45"/><circle cx="3.2" cy="16.8" r="1.4" fill="currentColor" stroke="none"/></svg>Liquidity Radar</span><span class="lr-brand__sub">미국 달러 유동성 대시보드</span></div>
+ <div class="lr-meta"><span>기준일 <b>2026-09-25 (금)</b></span><span>2026-09-26 18:31 KST 자동 갱신</span><span>출처 FRED · 뉴욕 연은</span></div>
+</div>
+<nav class="lr-tabs" role="tablist" aria-label="탭"><button class="lr-tab" role="tab" aria-selected="true">요약</button><button class="lr-tab" role="tab" aria-selected="false">수위</button><button class="lr-tab" role="tab" aria-selected="false">압력</button><button class="lr-tab" role="tab" aria-selected="false">알아두기</button></nav>
+</div></header>
+<main class="lr-page">
+<section class="lr-card lr-headline" aria-label="현재 상태">
+<span class="lr-badge lr-badge--caution lr-badge--lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>주의</span>
+<div><p class="lr-headline__text">자금시장 압력은 없지만(L0), 유동성 수위가 30일간 0.026조$ 줄었습니다</p>
+<p class="lr-headline__sub">압력(자금시장 금리·비상 창구)과 수위(시장에 풀린 돈의 양)를 함께 본 판정입니다. 매매 신호가 아닙니다.</p></div>
+<div class="lr-scale" aria-label="5단계 중 현재"><span class="lr-scale__step">양호</span><span class="lr-scale__step">중립</span><span class="lr-scale__step" aria-current="true">주의</span><span class="lr-scale__step">경고</span><span class="lr-scale__step">위험</span></div>
+</section>
+<div class="lr-grid-4"><article class="lr-card lr-metric">
+<div class="lr-metric__top"><span class="lr-metric__name"><i class="lr-swatch" style="background:var(--series-netliq)"></i>Net Liquidity</span><span class="lr-code">WALCL−TGA−RRP</span></div>
+<div class="lr-metric__value"><span class="lr-metric__num">5.77</span><span class="lr-metric__unit">조$</span></div>
+<div class="lr-metric__sub"><span class="lr-muted">30일</span> ▼ 0.026조</div>
+<div class="lr-metric__plain">연준이 푼 돈에서 정부 금고와 역레포에 묶인 돈을 뺀 값. 방향이 중요합니다.</div>
+</article><article class="lr-card lr-metric">
+<div class="lr-metric__top"><span class="lr-metric__name"><i class="lr-swatch" style="background:var(--series-reserves)"></i>지급준비금</span><span class="lr-code">WRESBAL</span></div>
+<div class="lr-metric__value"><span class="lr-metric__num">2.93</span><span class="lr-metric__unit">조$</span></div>
+<div class="lr-metric__sub">은행 총자산의 <b>11.4%</b></div>
+<div class="lr-metric__plain">은행이 연준에 맡겨 둔 돈. 시장 유동성의 실제 연료입니다.</div>
+</article><article class="lr-card lr-metric">
+<div class="lr-metric__top"><span class="lr-metric__name">SOFR − IORB</span><span class="lr-code">SOFR·IORB</span></div>
+<div class="lr-metric__value"><span class="lr-metric__num">−2</span><span class="lr-metric__unit">bp</span></div>
+<div class="lr-metric__sub"><span class="lr-muted">6개월 Z-score</span> +0.17 <span class="lr-muted">· 기준 +5bp</span></div>
+<div class="lr-metric__plain">하루짜리 담보 대출 금리와 연준 예치 이자의 차이. 음수가 정상입니다.</div>
+</article><article class="lr-card lr-metric">
+<div class="lr-metric__top"><span class="lr-metric__name">SRF 사용액</span><span class="lr-code">RPONTSYD</span></div>
+<div class="lr-metric__value"><span class="lr-metric__num">$0</span><span class="lr-metric__unit"></span></div>
+<div class="lr-metric__sub"><span class="lr-muted">기준</span> $1B</div><span class="lr-metric__flag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>0이어도 안심 금지</span>
+<div class="lr-metric__plain">연준 비상 창구를 쓴 금액. 쓰는 게 부끄러워 피하는 경향이 있습니다.</div>
+</article></div>
+<div class="lr-grid-split"><section class="lr-card" aria-labelledby="f-t">
+<div class="lr-card__head"><h2 class="lr-card__title" id="f-t">무엇이 움직였나</h2><span class="lr-caption">최근 30영업일 · 지급준비금에 준 영향 · 단위 조$</span></div>
+<div class="lr-axis"><span></span><div class="lr-axis__scale"><span>← 지급준비금 감소</span><span>0</span><span>지급준비금 증가 →</span></div><span></span></div>
+<div class="lr-factors"><div class="lr-factor "><div class="lr-factor__label">연준 국채 보유<small>TREAST</small></div>
+<div class="lr-factor__track" role="img" aria-label="연준 국채 보유 지급준비금에 +0.020조$"><span class="lr-factor__bar" style="left:50%;width:40.00%;background:var(--series-netliq)"></span></div>
+<div class="lr-factor__val">+0.020<small>+0.020 증가</small></div></div><div class="lr-factor "><div class="lr-factor__label">정부 금고 TGA<small>WTREGEN</small></div>
+<div class="lr-factor__track" role="img" aria-label="정부 금고 TGA 지급준비금에 −0.013조$"><span class="lr-factor__bar" style="right:50%;width:26.00%;background:var(--series-tga)"></span></div>
+<div class="lr-factor__val">−0.013<small>+0.013 증가</small></div></div><div class="lr-factor "><div class="lr-factor__label">역레포 RRP<small>RRPONTSYD</small></div>
+<div class="lr-factor__track" role="img" aria-label="역레포 RRP 지급준비금에 −0.0003조$"><span class="lr-factor__bar" style="right:50%;width:0.60%;background:var(--series-rrp)"></span></div>
+<div class="lr-factor__val">−0.0003<small>+0.0003 증가</small></div></div><div class="lr-factor lr-factor--residual"><div class="lr-factor__label">그 외 (잔차)<small>MBS·유통화폐 등</small></div>
+<div class="lr-factor__track" role="img" aria-label="그 외 (잔차) 지급준비금에 −0.0207조$"><span class="lr-factor__bar" style="right:50%;width:41.40%;background:var(--series-other)"></span></div>
+<div class="lr-factor__val">−0.0207<small>계산값</small></div></div><div class="lr-factor lr-factor--result"><div class="lr-factor__label">지급준비금 30일 변화<small>잔액 2.93조$ 중</small></div>
+<div class="lr-factor__track" role="img" aria-label="지급준비금 30일 변화 지급준비금에 −0.014조$"><span class="lr-factor__bar" style="right:50%;width:28.00%;background:var(--series-reserves)"></span></div>
+<div class="lr-factor__val">−0.014<small>변화량</small></div></div></div>
+<p class="lr-card__note">연준은 국채를 조금 늘렸지만 정부 금고로 돈이 더 빠져나가 지급준비금이 줄었습니다.</p>
+<p class="lr-caption" style="margin:8px 0 0">TGA·RRP는 늘어나면 시장 돈을 빨아들여 지급준비금을 줄입니다. 오른쪽 작은 글씨는 각 항목 자체의 변화량입니다.</p>
+</section><section class="lr-card" aria-labelledby="d-t">
+<div class="lr-card__head"><h2 class="lr-card__title" id="d-t">데이터 발표주기</h2><span class="lr-caption">지표마다 나오는 주기가 다릅니다</span></div>
+<div class="lr-rel">
+<div class="lr-rel__group"><span class="lr-rel__head">매일 <span class="lr-muted">(미국 영업일)</span></span>
+ <div class="lr-rel__row"><span>RRP · IORB · S&amp;P 500</span><span class="lr-rel__last">최신 <b>09-25</b></span></div>
+ <div class="lr-rel__row"><span>SOFR <small>다음 영업일 아침에 발표</small></span><span class="lr-rel__last"><span class="lr-dot lr-dot--stale"></span><span class="lr-fresh__stale">이전 값</span> <b>09-24</b></span></div>
+</div>
+<div class="lr-rel__group"><span class="lr-rel__head">매주</span>
+ <div class="lr-rel__row"><span><i class="lr-mk lr-mk--h41" aria-hidden="true"></i>WALCL · TGA · 지급준비금 <small>H.4.1 · 목요일 발표, 수요일 기준 값</small></span><span class="lr-rel__last"><span class="lr-dot lr-dot--stale"></span><span class="lr-fresh__stale">이전 값</span> <b>09-23</b></span></div>
+ <div class="lr-rel__row"><span><i class="lr-mk lr-mk--h8" aria-hidden="true"></i>은행 총자산 <small>H.8 · 금요일 발표, 9일 전 수요일 기준 값</small></span><span class="lr-rel__last"><span class="lr-dot lr-dot--stale"></span><span class="lr-fresh__stale">이전 값</span> <b>09-16</b></span></div>
+</div>
+</div>
+<div class="lr-cal" aria-label="2026년 9월 주간 지표 발표일">
+<div class="lr-cal__top"><b>2026년 9월</b><span class="lr-legend"><span><i class="lr-mk lr-mk--h41"></i>H.4.1</span><span><i class="lr-mk lr-mk--h8"></i>H.8</span><span><i class="lr-cal__todaykey"></i>기준일</span></span></div>
+<div class="lr-cal__grid"><span class="lr-cal__w">일</span><span class="lr-cal__w">월</span><span class="lr-cal__w">화</span><span class="lr-cal__w">수</span><span class="lr-cal__w">목</span><span class="lr-cal__w">금</span><span class="lr-cal__w">토</span><span class="lr-cal__d is-out"></span><span class="lr-cal__d is-out"></span><span class="lr-cal__d" aria-label="9월 1일"><b>1</b></span><span class="lr-cal__d" aria-label="9월 2일"><b>2</b></span><span class="lr-cal__d" aria-label="9월 3일 H.4.1 발표"><b>3</b><i class="lr-mk lr-mk--h41" aria-hidden="true"></i></span><span class="lr-cal__d" aria-label="9월 4일 H.8 발표"><b>4</b><i class="lr-mk lr-mk--h8" aria-hidden="true"></i></span><span class="lr-cal__d is-weekend" aria-label="9월 5일"><b>5</b></span><span class="lr-cal__d is-weekend" aria-label="9월 6일"><b>6</b></span><span class="lr-cal__d is-holiday" aria-label="9월 7일 노동절 휴장"><b>7</b></span><span class="lr-cal__d" aria-label="9월 8일"><b>8</b></span><span class="lr-cal__d" aria-label="9월 9일"><b>9</b></span><span class="lr-cal__d" aria-label="9월 10일 H.4.1 발표"><b>10</b><i class="lr-mk lr-mk--h41" aria-hidden="true"></i></span><span class="lr-cal__d" aria-label="9월 11일 H.8 발표"><b>11</b><i class="lr-mk lr-mk--h8" aria-hidden="true"></i></span><span class="lr-cal__d is-weekend" aria-label="9월 12일"><b>12</b></span><span class="lr-cal__d is-weekend" aria-label="9월 13일"><b>13</b></span><span class="lr-cal__d" aria-label="9월 14일"><b>14</b></span><span class="lr-cal__d" aria-label="9월 15일"><b>15</b></span><span class="lr-cal__d" aria-label="9월 16일"><b>16</b></span><span class="lr-cal__d" aria-label="9월 17일 H.4.1 발표"><b>17</b><i class="lr-mk lr-mk--h41" aria-hidden="true"></i></span><span class="lr-cal__d" aria-label="9월 18일 H.8 발표"><b>18</b><i class="lr-mk lr-mk--h8" aria-hidden="true"></i></span><span class="lr-cal__d is-weekend" aria-label="9월 19일"><b>19</b></span><span class="lr-cal__d is-weekend" aria-label="9월 20일"><b>20</b></span><span class="lr-cal__d" aria-label="9월 21일"><b>21</b></span><span class="lr-cal__d" aria-label="9월 22일"><b>22</b></span><span class="lr-cal__d" aria-label="9월 23일"><b>23</b></span><span class="lr-cal__d" aria-label="9월 24일 H.4.1 발표"><b>24</b><i class="lr-mk lr-mk--h41" aria-hidden="true"></i></span><span class="lr-cal__d is-today" aria-label="9월 25일 H.8 발표 기준일"><b>25</b><i class="lr-mk lr-mk--h8" aria-hidden="true"></i></span><span class="lr-cal__d is-weekend" aria-label="9월 26일"><b>26</b></span><span class="lr-cal__d is-weekend" aria-label="9월 27일"><b>27</b></span><span class="lr-cal__d" aria-label="9월 28일"><b>28</b></span><span class="lr-cal__d" aria-label="9월 29일"><b>29</b></span><span class="lr-cal__d" aria-label="9월 30일"><b>30</b></span><span class="lr-cal__d is-out"></span><span class="lr-cal__d is-out"></span><span class="lr-cal__d is-out"></span></div>
+</div>
+<p class="lr-caption" style="margin:12px 0 0">다음 발표 <b class="lr-ink">10-01 (목) H.4.1</b> · <b class="lr-ink">10-02 (금) H.8</b>. 미국 동부 오후 발표라 한국 시간으로는 다음 날 새벽에 반영됩니다. 7일은 노동절 휴장.</p>
+</section></div>
+<section class="lr-card" aria-labelledby="t-t">
+<div class="lr-card__head"><h2 class="lr-card__title" id="t-t">압력 단계 타임라인</h2><span class="lr-caption">최근 3년 · 마우스를 올리면 날짜와 단계</span></div>
+<div class="lr-timeline" id="tl" data-demo="1"><div class="lr-tip" id="tl-tip" hidden></div></div>
+<div class="lr-legend" style="margin-top:8px"><span><i style="height:4px;background:var(--pressure-0)"></i>L0 정상</span><span><i style="height:8px;background:var(--pressure-1)"></i>L1 주의</span><span><i style="height:12px;background:var(--pressure-2)"></i>L2 경계</span><span><i style="height:16px;background:var(--pressure-3)"></i>L3 심각</span></div>
+<p class="lr-card__note">대부분의 날은 L0입니다. 압력은 분기말·월말 부근에 짧게 튀며, 2025년 10월 말과 12월 말이 가장 강했습니다.</p>
+</section>
+<details class="lr-limits">
+<summary><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4"/><circle cx="8" cy="4.9" r=".5" fill="currentColor"/></svg>이 화면의 한계 3가지 <em>· 판단 전에 꼭 읽어 주세요</em><svg class="lr-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></summary>
+<ul><li>해외 달러(유로달러) 시장은 어떤 지표로도 보이지 않습니다.</li><li>은행 대출로 만들어지는 돈은 지급준비금을 움직이지 않습니다.</li><li>유동성과 주가의 선후 관계는 시기에 따라 깨집니다.</li></ul>
+</details>
+</main>
+<script>
+(function(){
+var EV=[["2024-09-30", 1], ["2024-10-01", 2], ["2024-12-31", 1], ["2025-06-30", 3], ["2025-07-01", 2], ["2025-09-15", 2], ["2025-09-16", 1], ["2025-09-30", 2], ["2025-10-01", 2], ["2025-10-30", 3], ["2025-10-31", 3], ["2025-11-03", 2], ["2025-11-28", 2], ["2025-12-01", 3], ["2025-12-30", 3], ["2025-12-31", 3], ["2026-01-02", 2], ["2026-03-31", 2]], S=new Date("2023-09-25"), E=new Date("2026-09-25"), NAMES=["L0 정상","L1 주의","L2 경계","L3 심각"];
+var box=document.getElementById("tl"), tip=document.getElementById("tl-tip"), NS="http://www.w3.org/2000/svg";
+function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+function draw(){
+ var W=box.clientWidth, H=96, top=8, base=64, span=E-S; var svg=box.querySelector("svg"); if(svg) svg.remove();
+ svg=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"최근 3년 압력 단계. 대부분 L0, 분기말 부근 L1~L3. 가장 강한 날 2025-10-31, 2025-12-31(L3)."});
+ var X=function(d){return (new Date(d)-S)/span*W;};
+ [2024,2025,2026].forEach(function(y){var x=X(y+"-01-01");svg.appendChild(el("line",{class:"t-grid",x1:x,x2:x,y1:top,y2:base+6}));var t=el("text",{class:"t-tick",x:x+4,y:base+22});t.textContent=y+"";svg.appendChild(t);});
+ svg.appendChild(el("rect",{class:"t-base",x:0,y:base-4,width:W,height:4}));
+ var hs=[0,18,34,52];
+ EV.forEach(function(e){var x=X(e[0]),h=hs[e[1]];svg.appendChild(el("rect",{class:"t-l"+e[1],x:x-2,y:base-4-h,width:4,height:h}));});
+ var nx=W-1; svg.appendChild(el("rect",{class:"t-now",x:nx-1,y:base-10,width:2,height:14}));
+ var nt=el("text",{class:"t-now",x:nx,y:base+22,"text-anchor":"end"});nt.textContent="지금 L0";svg.appendChild(nt);
+ var cross=el("line",{class:"t-cross",x1:0,x2:0,y1:top,y2:base+4,visibility:"hidden"});svg.appendChild(cross);
+ box.insertBefore(svg,tip);
+ function show(px){var d=new Date(+S+px/W*span),best=null,bd=1e15;EV.forEach(function(e){var dd=Math.abs(new Date(e[0])-d);if(dd<bd){bd=dd;best=e;}});
+  var lv=0,ds=d.toISOString().slice(0,10),x=px; if(best&&bd<4*864e5){lv=best[1];ds=best[0];x=X(best[0]);}
+  cross.setAttribute("x1",x);cross.setAttribute("x2",x);cross.setAttribute("visibility","visible");
+  tip.hidden=false;tip.style.left=(x>W-200?x-188:x+10)+"px";tip.style.top=top+"px";
+  tip.innerHTML="<b>"+ds+"</b>압력 "+NAMES[lv]; }
+ svg.addEventListener("mousemove",function(ev){var r=svg.getBoundingClientRect();show(ev.clientX-r.left);});
+ svg.addEventListener("mouseleave",function(){cross.setAttribute("visibility","hidden");tip.hidden=true;});
+ if(box.dataset.demo) show(X("2025-12-31"));
+}
+draw(); window.addEventListener("resize",draw);
+})();
+</script>
+</body>
+</html>

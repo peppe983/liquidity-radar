@@ -1,0 +1,12 @@
+<!-- @dsCard group="차트" height=440 -->
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SmallMultiples</title>
+<style>html,body{margin:0;background:var(--surface);} .pad{padding:16px;}</style></head>
+<body class="lr-root">
+<div class="pad"><div class="lr-multiples"><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-netliq)"></i>Net Liquidity</span></div><div data-k="netliq" data-c="series-netliq"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-reserves)"></i>지급준비금</span></div><div data-k="reserves" data-c="series-reserves"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-tga)"></i>TGA</span></div><div data-k="tga" data-c="series-tga"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-rrp)"></i>RRP</span></div><div data-k="rrp" data-c="series-rrp"></div></div></div></div>
+<script>
+var LR=window.LiquidityRadar,W=LR.demo.weekly,Dd=LR.demo.daily,F=LR.fmt;LR.setPeriod("3y");document.querySelectorAll("[data-k]").forEach(function(n){var k=n.dataset.k;LR.chart(n,{dates:W.dates,mini:true,includeZero:k==="rrp",series:[{label:k,color:n.dataset.c,values:W[k]}],fmt:F.tn});});
+</script>
+</body>
+</html>

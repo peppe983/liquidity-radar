@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquidity Radar</title>
+<meta name="description" content="미국 달러 유동성 대시보드 — 연준 대차대조표와 자금시장 압력을 평일마다 자동 갱신합니다.">
+<!-- 디자인 시스템: liquidity-radar-design/ 원본을 assets/로 복사. tokens → bundle → site 순서로 로드 -->
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/bundle.css">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/bundle.js"></script>
+</head>
+<body class="lr-root">
+
+<header class="lr-header"><div class="lr-header__in">
+<div class="lr-header__top">
+ <div class="lr-brand"><span class="lr-brand__name"><svg class="lr-brand__mark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M3 17a14 14 0 0 1 14-14"/><path d="M3 17a9 9 0 0 1 9-9" opacity=".7"/><path d="M3 17a4 4 0 0 1 4-4" opacity=".45"/><circle cx="3.2" cy="16.8" r="1.4" fill="currentColor" stroke="none"/></svg>Liquidity Radar</span><span class="lr-brand__sub">미국 달러 유동성 대시보드</span></div>
+ <div class="lr-meta"><span>기준일 <b data-f="asof">–</b></span><span data-f="updated">–</span><span>출처 FRED · 뉴욕 연은</span></div>
+</div>
+<nav class="lr-tabs" role="tablist" aria-label="탭">
+ <button class="lr-tab" role="tab" id="tab-summary" aria-controls="panel-summary" data-tab="summary" aria-selected="true">요약</button>
+ <button class="lr-tab" role="tab" id="tab-level" aria-controls="panel-level" data-tab="level" aria-selected="false">수위</button>
+ <button class="lr-tab" role="tab" id="tab-pressure" aria-controls="panel-pressure" data-tab="pressure" aria-selected="false">압력</button>
+ <button class="lr-tab" role="tab" id="tab-learn" aria-controls="panel-learn" data-tab="learn" aria-selected="false">알아두기</button>
+</nav>
+</div></header>
+
+<main>
+<div class="lr-page lr-loadfail" id="loadfail" hidden>
+ <section class="lr-card"><h2 class="lr-panel-title">데이터를 불러오지 못했습니다</h2>
+ <p class="lr-panel-q" data-f="loaderror"></p>
+ <p class="lr-caption">파일을 더블클릭해 연 경우(file://)에는 브라우저가 데이터 파일 읽기를 막습니다. 저장소 폴더에서 <code>python -m http.server</code>를 실행한 뒤 http://localhost:8000 으로 여세요.</p></section>
+</div>
+
+<!-- ============================== 요약 ============================== -->
+<div class="lr-page" id="panel-summary" role="tabpanel" aria-labelledby="tab-summary" data-tabpanel="summary">
+<section class="lr-card lr-headline" aria-label="현재 상태" id="status">
+ <span class="lr-badge lr-badge--neutral lr-badge--lg" data-status-badge>불러오는 중</span>
+ <div><p class="lr-headline__text" data-f="headline">데이터를 불러오는 중입니다</p>
+ <p class="lr-headline__sub">압력(자금시장 금리·비상 창구)과 수위(시장에 풀린 돈의 양)를 함께 본 판정입니다. 매매 신호가 아닙니다.</p>
+ <p class="lr-headline__sub" data-f="incomplete" hidden></p></div>
+ <div class="lr-scale" aria-label="5단계 중 현재"><span class="lr-scale__step" data-scale="healthy">양호</span><span class="lr-scale__step" data-scale="neutral">중립</span><span class="lr-scale__step" data-scale="watch">주의</span><span class="lr-scale__step" data-scale="warning">경고</span><span class="lr-scale__step" data-scale="critical">위험</span></div>
+</section>
+
+<div class="lr-grid-4"><article class="lr-card lr-metric">
+ <div class="lr-metric__top"><span class="lr-metric__name"><i class="lr-swatch" style="background:var(--series-netliq)"></i>Net Liquidity</span><span class="lr-code">WALCL−TGA−RRP</span></div>
+ <div class="lr-metric__value"><span class="lr-metric__num" data-f="nl">–</span><span class="lr-metric__unit">조$</span></div>
+ <div class="lr-metric__sub"><span class="lr-muted">30일</span> <span data-f="nlchg">–</span></div>
+ <div class="lr-metric__plain">연준이 푼 돈에서 정부 금고와 역레포에 묶인 돈을 뺀 값. 방향이 중요합니다.</div>
+</article><article class="lr-card lr-metric">
+ <div class="lr-metric__top"><span class="lr-metric__name"><i class="lr-swatch" style="background:var(--series-reserves)"></i>지급준비금</span><span class="lr-code">WRESBAL</span></div>
+ <div class="lr-metric__value"><span class="lr-metric__num" data-f="res">–</span><span class="lr-metric__unit">조$</span></div>
+ <div class="lr-metric__sub">은행 총자산의 <b data-f="ratio">–</b></div>
+ <div class="lr-metric__plain">은행이 연준에 맡겨 둔 돈. 시장 유동성의 실제 연료입니다.</div>
+</article><article class="lr-card lr-metric">
+ <div class="lr-metric__top"><span class="lr-metric__name">SOFR − IORB</span><span class="lr-code">SOFR·IORB</span></div>
+ <div class="lr-metric__value"><span class="lr-metric__num" data-f="spread">–</span><span class="lr-metric__unit">bp</span></div>
+ <div class="lr-metric__sub"><span class="lr-muted">6개월 Z-score</span> <span data-f="z6m">–</span> <span class="lr-muted">· 2 이상이면 이례적 · 기준 +5bp</span></div>
+ <div class="lr-metric__plain">하루짜리 담보 대출 금리와 연준 예치 이자의 차이. 음수가 정상입니다.</div>
+</article><article class="lr-card lr-metric">
+ <div class="lr-metric__top"><span class="lr-metric__name">SRF 사용액</span><span class="lr-code">뉴욕 연은</span></div>
+ <div class="lr-metric__value"><span class="lr-metric__num" data-f="srf">–</span><span class="lr-metric__unit"></span></div>
+ <div class="lr-metric__sub"><span class="lr-muted">기준</span> $1B <span class="lr-muted" data-f="srfdate"></span></div><span class="lr-metric__flag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>0이어도 안심 금지</span>
+ <div class="lr-metric__plain">연준 비상 창구를 쓴 금액. 쓰는 게 부끄러워 피하는 경향이 있습니다.</div>
+</article></div>
+
+<div class="lr-grid-split"><section class="lr-card" aria-labelledby="f-t">
+ <div class="lr-card__head"><h2 class="lr-card__title" id="f-t">무엇이 움직였나</h2><span class="lr-caption">최근 30영업일 · 지급준비금에 준 영향 · 단위 조$</span></div>
+ <div class="lr-axis"><span></span><div class="lr-axis__scale"><span>← 지급준비금 감소</span><span>0</span><span>지급준비금 증가 →</span></div><span></span></div>
+ <div class="lr-factors" id="factors"></div>
+ <p class="lr-card__note" data-f="factornote"></p>
+ <p class="lr-caption" style="margin:8px 0 0">연준 총자산이 늘면 돈이 풀리고, TGA·RRP·유통화폐가 늘면 그만큼 지급준비금이 줄어듭니다. 오른쪽 작은 글씨는 각 항목 자체의 변화량입니다. 기타에는 작은 부채들과 집계 시점 차이(지급준비금은 주 평균, 나머지는 수요일 값)가 섞여 있습니다.</p>
+</section><section class="lr-card" aria-labelledby="d-t">
+ <div class="lr-card__head"><h2 class="lr-card__title" id="d-t">데이터 발표주기</h2><span class="lr-caption">지표마다 나오는 주기가 다릅니다</span></div>
+ <div class="lr-rel" id="fresh"></div>
+ <div class="lr-cal" id="cal"></div>
+ <p class="lr-caption" style="margin:12px 0 0" data-f="nextrel"></p>
+</section></div>
+
+<section class="lr-card" aria-labelledby="t-t">
+ <div class="lr-card__head"><h2 class="lr-card__title" id="t-t">압력 단계 타임라인</h2><span class="lr-caption">최근 3년 · 마우스를 올리면 날짜와 단계</span></div>
+ <div class="lr-timeline" id="tl"><div class="lr-tip" id="tl-tip" hidden></div></div>
+ <div class="lr-legend" style="margin-top:8px"><span><i style="height:4px;background:var(--pressure-0)"></i>L0 정상</span><span><i style="height:8px;background:var(--pressure-1)"></i>L1 주의</span><span><i style="height:12px;background:var(--pressure-2)"></i>L2 경계</span><span><i style="height:16px;background:var(--pressure-3)"></i>L3 심각</span></div>
+ <p class="lr-card__note" data-f="tlnote"></p>
+</section>
+
+<details class="lr-limits">
+ <summary><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4"/><circle cx="8" cy="4.9" r=".5" fill="currentColor"/></svg>이 화면의 한계 3가지 <em>· 판단 전에 꼭 읽어 주세요</em><svg class="lr-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg></summary>
+ <ul><li>해외 달러(유로달러) 시장은 어떤 지표로도 보이지 않습니다.</li><li>은행 대출로 만들어지는 돈은 지급준비금을 움직이지 않습니다.</li><li>유동성과 주가의 선후 관계는 시기에 따라 깨집니다.</li></ul>
+</details>
+</div>
+
+<!-- ============================== 수위 ============================== -->
+<div class="lr-page" id="panel-level" role="tabpanel" aria-labelledby="tab-level" data-tabpanel="level" hidden>
+<p class="lr-tabintro"><b>물이 얼마나 있나.</b> 시장에 풀린 달러의 양을 봅니다. 차트를 하나씩 골라 보세요.</p>
+<div class="lr-toolbar">
+ <div class="lr-toolbar__group"><div class="lr-chips" role="group" aria-label="차트 고르기" data-lr-sub><button class="lr-chip" data-value="nl" aria-pressed="true">Net Liquidity</button><button class="lr-chip" data-value="res" aria-pressed="false">지급준비금</button><button class="lr-chip" data-value="four" aria-pressed="false">네 지표 한눈에</button><button class="lr-chip" data-value="stack" aria-pressed="false">연준 부채 구성</button><button class="lr-chip" data-value="ratio" aria-pressed="false">지급준비금이 충분한가</button><button class="lr-chip" data-value="spx" aria-pressed="false">주가와 비교</button><button class="lr-chip" data-value="wrong" aria-pressed="false">이렇게 계산하면 틀려요</button></div></div>
+ <div class="lr-toolbar__group lr-toolbar__right" data-lr-periodwrap><button class="lr-toggle" type="button" aria-pressed="false" data-lr-overlay title="차트 아래에 S&amp;P 500을 같은 기간으로 붙여 봅니다"><i aria-hidden="true"></i>S&amp;P 500 비교</button><span class="lr-toolbar__label">기간</span><div class="lr-chips" role="group" aria-label="기간" data-lr-period><button class="lr-chip" data-value="6m" aria-pressed="false">6개월</button><button class="lr-chip" data-value="1y" aria-pressed="true">1년</button><button class="lr-chip" data-value="3y" aria-pressed="false">3년</button></div></div>
+</div>
+
+<div data-panel="nl">
+<section class="lr-card"><h2 class="lr-panel-title">Net Liquidity</h2><p class="lr-panel-q">연준이 푼 돈 중 시장에 남아 있는 몫은 늘고 있나, 줄고 있나?</p><div class="lr-formula" role="math"><span class="lr-term">연준 총자산 <b data-f="walcl">–</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-tga)"></i>TGA <b data-f="tga">–</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-rrp)"></i>RRP <b data-f="rrp">–</b></span><span class="lr-op">=</span><span class="lr-term lr-term--result"><i style="background:var(--series-netliq)"></i>Net Liquidity <b><span data-f="nl">–</span>조$</b></span></div><div data-chart="nl"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>연준이 푼 돈(총자산)에서 정부 금고(TGA)와 역레포(RRP)에 묶인 돈을 뺀 값입니다. 시장에 풀려 있는 달러의 대략적인 수위입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>절대 수준보다 <b>방향</b>이 중요합니다. 최근 3년 범위는 <span data-f="nlrange">–</span>이고, 지금 <span data-f="nl">–</span>조$는 <span data-f="nlpos">–</span>입니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>현금(유통화폐 <span data-f="cur">–</span>조$)이 섞여 있어 항상 크게 나옵니다. 은행 시스템 안의 돈만 보려면 “지급준비금” 차트를 보세요.</p></div>
+</div></div>
+</div>
+
+<div data-panel="res" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">지급준비금 (더 정확한 버전)</h2><p class="lr-panel-q">Net Liquidity에서 현금을 빼면, 은행이 실제로 쓸 수 있는 돈은 얼마인가?</p><div class="lr-formula" role="math"><span class="lr-term"><i style="background:var(--series-netliq)"></i>Net Liquidity <b data-f="nl">–</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-currency)"></i>유통화폐 <b data-f="cur">–</b></span><span class="lr-op">=</span><span class="lr-term lr-term--result"><i style="background:var(--series-reserves)"></i>지급준비금 <b data-f="res">–</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-other)"></i>기타 <b data-f="other">–</b></span></div><div data-chart="res"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>은행이 연준에 맡겨 둔 돈입니다. 은행끼리 결제하고 단기자금을 빌려주는 데 쓰는, 유동성의 실제 연료입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>두 선의 간격이 거의 일정합니다. 유통화폐가 3년간 <span data-f="currange">–</span>로 거의 고정이기 때문입니다. 방향은 같고 수준만 다릅니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>기타(<span data-f="other">–</span>조$)는 여러 작은 부채의 합이라 가끔 따로 움직입니다. 그 주에는 두 선의 간격이 잠깐 벌어질 수 있습니다.</p></div>
+</div></div>
+</div>
+
+<div data-panel="four" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">네 지표 한눈에</h2><p class="lr-panel-q">수위를 이루는 네 숫자는 각각 어떻게 움직였나?</p><div class="lr-multiples"><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-netliq)"></i>Net Liquidity</span><span class="lr-caption">지금 <b><span data-f="nl">–</span>조$</b></span></div><div data-chart="m-nl"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-reserves)"></i>지급준비금</span><span class="lr-caption">지금 <b><span data-f="res">–</span>조$</b></span></div><div data-chart="m-res"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-tga)"></i>TGA (정부 금고)</span><span class="lr-caption">지금 <b><span data-f="tga">–</span>조$</b></span></div><div data-chart="m-tga"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-rrp)"></i>RRP (역레포)</span><span class="lr-caption">지금 <b><span data-f="rrp">–</span>조$</b></span></div><div data-chart="m-rrp"></div></div></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>수위를 이루는 네 지표를 작은 차트 네 개로 나란히 놓았습니다. 각 차트는 자기 눈금을 씁니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>핵심은 RRP입니다. 3년 전 <span data-f="rrp0">–</span>조$에서 지금 <span data-f="rrp">–</span>조$<span data-f="rrpverb">–</span>. TGA는 세금과 국채 발행에 따라 <span data-f="tgarange">–</span> 사이에서 톱니처럼 움직입니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>네 차트의 세로 눈금이 서로 다릅니다. 차트끼리 높이를 직접 비교하지 마세요. 기간을 3년으로 바꾸면 RRP의 궤적이 가장 잘 보입니다.</p></div>
+</div></div>
+</div>
+
+<div data-panel="stack" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">연준 부채 구성</h2><p class="lr-panel-q">연준이 푼 돈은 어디에 쌓여 있나?</p><div class="lr-formula" role="math"><span class="lr-term">연준 총자산 <b data-f="walcl">–</b></span><span class="lr-op">=</span><span class="lr-term"><i style="background:var(--series-reserves)"></i>지급준비금 <b data-f="res">–</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-currency)"></i>유통화폐 <b data-f="cur">–</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-tga)"></i>TGA <b data-f="tga">–</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-rrp)"></i>RRP <b data-f="rrp">–</b></span><span class="lr-op">+</span><span class="lr-term"><i style="background:var(--series-other)"></i>기타 <b data-f="other">–</b></span></div><div data-chart="stack"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>연준 대차대조표의 부채 쪽을 층으로 쌓은 그림입니다. 맨 위 높이가 연준 총자산입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>노란 RRP 층이 3년 사이 <span data-f="rrp0">–</span>조$에서 <span data-f="rrp">–</span>조$가 됐습니다. 전체 높이(연준 총자산)는 <span data-f="walcl0">–</span>조$에서 <span data-f="walcl">–</span>조$로 바뀌었습니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>누적 차트는 맨 아래 층만 바닥이 평평해 정확히 읽힙니다. 위층의 크기는 마우스를 올려 툴팁으로 확인하세요.</p></div>
+</div></div>
+</div>
+
+<div data-panel="ratio" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">지급준비금이 충분한가</h2><p class="lr-panel-q">은행 자산 대비 지급준비금 비율은 얼마나 여유 있나?</p><div class="lr-formula" role="math"><span class="lr-term"><i style="background:var(--series-reserves)"></i>지급준비금 <b data-f="res">–</b></span><span class="lr-op">÷</span><span class="lr-term">은행 총자산 <b data-f="bank">–</b></span><span class="lr-op">=</span><span class="lr-term lr-term--result"><i style="background:var(--series-reserves)"></i>비율 <b data-f="ratio">–</b></span></div><div data-chart="ratio"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>은행이 가진 전체 자산 가운데 지급준비금이 차지하는 비중입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>지금 <span data-f="ratio">–</span>입니다. 이 비율이 낮아질수록 은행이 현금을 아끼게 되고, 단기자금 금리가 튀기 쉬워집니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>“충분하다”의 정해진 기준선은 없습니다. 한 숫자로 판단하지 말고 추세와 압력 탭을 같이 보세요.</p></div>
+</div></div>
+</div>
+
+<div data-panel="spx" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">주가와 비교</h2><p class="lr-panel-q">유동성과 주가는 같이 움직이고 있나?</p><div data-chart="spx"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>Net Liquidity와 S&amp;P 500을 둘 다 기간 시작일=100으로 바꿔 한 축에 놓았습니다. 단위가 달라 두 축을 겹치는 대신 이렇게 맞춥니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>최근 6개월 기준 유동성 <span data-f="idxnl">–</span>, 주가 <span data-f="idxspx">–</span>입니다. <span data-f="idxsay">–</span> 기간을 바꾸면 시작점이 바뀌어 숫자도 달라집니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>이 그림은 인과가 아니라 동행 여부만 보여줍니다. 둘의 선후 관계는 시기에 따라 자주 깨집니다.</p></div>
+</div></div>
+</div>
+
+<div data-panel="wrong" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">이렇게 계산하면 틀려요</h2><p class="lr-panel-q">자주 보이는 “지급준비금 − TGA − RRP” 계산은 왜 틀렸나?</p><div class="lr-formula" role="math"><span class="lr-term"><i style="background:var(--series-reserves)"></i>지급준비금 <b data-f="res">–</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-tga)"></i>TGA <b data-f="tga">–</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-rrp)"></i>RRP <b data-f="rrp">–</b></span><span class="lr-op">=</span><span class="lr-term"><b data-f="wrong">–</b> ✕ 이중 차감</span></div><div data-chart="wrong"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>인터넷에서 자주 보이는 잘못된 유동성 계산입니다. 점선이 그 결과이고, 실선 두 개가 올바른 값입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>점선은 올바른 두 선보다 늘 한참 아래에 있고, TGA가 움직일 때마다 엉뚱하게 흔들립니다.</p></div>
+<div class="lr-explain__card lr-explain__card--caution"><h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>주의</h3><p>지급준비금에는 애초에 TGA·RRP가 들어 있지 않습니다. 여기서 또 빼면 같은 돈을 두 번 빼는 계산이 됩니다. 빼기는 연준 총자산에서 해야 합니다.</p></div>
+</div></div>
+</div>
+</div>
+
+<!-- ============================== 압력 ============================== -->
+<div class="lr-page" id="panel-pressure" role="tabpanel" aria-labelledby="tab-pressure" data-tabpanel="pressure" hidden>
+<p class="lr-tabintro"><b>부족해지고 있나.</b> 수위보다 먼저 반응하는 조기 경보입니다. 돈을 구하는 값이 기준보다 비싸졌는지 봅니다.</p>
+<div class="lr-toolbar">
+ <div class="lr-toolbar__group"><div class="lr-chips" role="group" aria-label="차트 고르기" data-lr-sub><button class="lr-chip" data-value="rates" aria-pressed="true">금리 두 개</button><button class="lr-chip" data-value="spread" aria-pressed="false">SOFR − IORB</button><button class="lr-chip" data-value="srf" aria-pressed="false">SRF 사용액</button><button class="lr-chip" data-value="verdict" aria-pressed="false">종합 판정</button></div></div>
+ <div class="lr-toolbar__group lr-toolbar__right" data-lr-periodwrap><button class="lr-toggle" type="button" aria-pressed="false" data-lr-overlay title="차트 아래에 S&amp;P 500을 같은 기간으로 붙여 봅니다"><i aria-hidden="true"></i>S&amp;P 500 비교</button><span class="lr-toolbar__label">기간</span><div class="lr-chips" role="group" aria-label="기간" data-lr-period><button class="lr-chip" data-value="6m" aria-pressed="false">6개월</button><button class="lr-chip" data-value="1y" aria-pressed="true">1년</button><button class="lr-chip" data-value="3y" aria-pressed="false">3년</button></div></div>
+</div>
+
+<div data-panel="rates">
+<section class="lr-card"><h2 class="lr-panel-title">금리 두 개</h2><p class="lr-panel-q">기준 금리와 시장 금리는 얼마나 붙어 다니나?</p><div data-chart="rates"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p><b>IORB <span data-f="iorb">–</span></b>는 연준이 은행 예치금에 주는 이자로, 금리 체계의 기준선입니다. <b>SOFR <span data-f="sofr">–</span></b>는 국채를 담보로 하루 빌리는 시장 금리입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>두 선이 거의 붙어 다니면 정상입니다. 계단처럼 한꺼번에 오르내린 곳은 연준의 금리 결정입니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>두 선이 너무 붙어 있어 차이가 눈에 안 보입니다. 그 차이를 확대한 것이 다음 차트 “SOFR − IORB”입니다.</p></div>
+</div></div>
+</div>
+
+<div data-panel="spread" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">SOFR − IORB</h2><p class="lr-panel-q">시장에서 돈 구하기가 기준보다 비싸지고 있나?</p><div data-chart="spread"></div></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>시장 금리(SOFR)에서 기준 금리(IORB)를 뺀 값입니다. 단위는 bp(0.01%p).</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>평소엔 음수입니다(3년 범위 <span data-f="sprange">–</span>, 중앙값 약 <span data-f="spmed">–</span>). 가로선 +5 / +15 / +30bp가 압력 L1 / L2 / L3의 기준입니다. 분기말에 위로 튀는 모습이 보입니다.</p></div>
+<div class="lr-explain__card lr-explain__card--caution"><h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>주의</h3><p>음수가 정상입니다. 양수로 올라오는 것 자체가 이상 신호입니다. 하루 튄 것보다 며칠 이어지는지를 보세요.</p></div>
+</div></div>
+</div>
+
+<div data-panel="srf" hidden>
+<section class="lr-card"><h2 class="lr-panel-title">SRF 사용액</h2><p class="lr-panel-q">은행이 연준 비상 창구에서 돈을 빌렸나?</p><div data-chart="srf"></div><p class="lr-caption" data-f="srfmissing" hidden>SRF 이력을 불러오지 못했습니다. 사용액을 모르는 것이지, 0이라는 뜻이 아닙니다.</p></section>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>SRF는 연준의 상시 레포 창구입니다. 은행이 국채를 맡기고 연준에서 하루 돈을 빌리는 비상구입니다. 로그 눈금이라 $1M와 $74B가 한 차트에 보입니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>$1B 미만 회색은 노이즈, $1B~10B 주황은 주의, $10B 이상 빨강은 심각입니다. <span data-f="srfsay">–</span></p></div>
+<div class="lr-explain__card lr-explain__card--caution"><h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>주의</h3><p>사용액 0이 압력 없음을 뜻하지 않습니다. 쓰면 약해 보인다는 낙인 때문에 은행이 피하기도 합니다. 반드시 SOFR − IORB와 같이 보세요.</p></div>
+</div></div>
+</div>
+
+<div data-panel="verdict" hidden>
+<div class="lr-grid-split">
+<section class="lr-card"><h2 class="lr-panel-title">압력 4단계</h2><p class="lr-panel-q">지금 자금시장 압력은 어느 단계인가?</p><div class="lr-ladder" aria-label="압력 4단계"><div class="lr-step" data-step="3">
+<span class="lr-step__lv"><i style="height:52px;background:var(--pressure-3)"></i>L3</span>
+<div><div class="lr-step__name">심각</div><div class="lr-step__rule">SOFR−IORB ≥ +30bp, 또는 SRF ≥ $10B</div></div>
+<span></span></div><div class="lr-step" data-step="2">
+<span class="lr-step__lv"><i style="height:34px;background:var(--pressure-2)"></i>L2</span>
+<div><div class="lr-step__name">경계</div><div class="lr-step__rule">이탈이 3일 중 2일 지속, 또는 SOFR−IORB ≥ +15bp, 또는 SRF ≥ $1B</div></div>
+<span></span></div><div class="lr-step" data-step="1">
+<span class="lr-step__lv"><i style="height:18px;background:var(--pressure-1)"></i>L1</span>
+<div><div class="lr-step__name">주의</div><div class="lr-step__rule">SOFR−IORB ≥ +5bp, 또는 평소 대비 크게 벗어남 (6개월 Z-score ≥ 2, 하루)</div></div>
+<span></span></div><div class="lr-step" data-step="0">
+<span class="lr-step__lv"><i style="height:6px;background:var(--pressure-0)"></i>L0</span>
+<div><div class="lr-step__name">정상</div><div class="lr-step__rule">아래 어느 조건에도 해당하지 않음</div></div>
+<span></span></div></div></section>
+<section class="lr-card"><h2 class="lr-panel-title">종합 판정표</h2><p class="lr-panel-q">압력 단계와 수위 방향을 합쳐 요약 탭의 상태를 정합니다. <span data-f="verdictnow"></span></p>
+<!-- 칸 값은 assess.py determine_status와 같아야 한다 -->
+<table class="lr-matrix"><thead><tr><th scope="col">압력 ＼ 수위 30일</th><th scope="col">늘어남</th><th scope="col">보합</th><th scope="col">줄어듦</th></tr></thead><tbody>
+<tr><th scope="row">L0</th><td data-cell="0-up"><span data-badge="healthy"></span></td><td data-cell="0-flat"><span data-badge="neutral"></span></td><td data-cell="0-down"><span data-badge="watch"></span></td></tr>
+<tr><th scope="row">L1</th><td data-cell="1-up"><span data-badge="watch"></span></td><td data-cell="1-flat"><span data-badge="watch"></span></td><td data-cell="1-down"><span data-badge="warning"></span></td></tr>
+<tr><th scope="row">L2</th><td data-cell="2-up"><span data-badge="warning"></span></td><td data-cell="2-flat"><span data-badge="warning"></span></td><td data-cell="2-down"><span data-badge="warning"></span></td></tr>
+<tr><th scope="row">L3</th><td data-cell="3-up"><span data-badge="critical"></span></td><td data-cell="3-flat"><span data-badge="critical"></span></td><td data-cell="3-down"><span data-badge="critical"></span></td></tr>
+</tbody></table>
+<p class="lr-rule"><b>압력이 수량을 이긴다.</b> 압력 신호가 켜지면 수위가 늘어도 최소 “주의”, L2 이상이면 최소 “경고”입니다. 돈의 양보다 돈을 구하기 어려운 정도가 먼저 문제를 알려주기 때문입니다. “위험”은 L3, 곧 실제 조달 실패 신호에만 씁니다.</p></section>
+</div>
+<div class="lr-section-gap"><div class="lr-explain">
+<div class="lr-explain__card"><h3>무엇인가</h3><p>조기 경보용 규칙입니다. 압력(금리·비상 창구)은 수위(돈의 양)보다 먼저 반응합니다.</p></div>
+<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>위에서부터 조건을 확인해 처음 맞는 단계가 오늘의 단계입니다. 판정표에서 오늘의 칸에 테두리가 있습니다.</p></div>
+<div class="lr-explain__card"><h3>주의</h3><p>규칙은 과거 사례로 정한 경험칙입니다. 단계가 올라가도 곧바로 위기를 뜻하지 않으며, 매매 신호가 아닙니다.</p></div>
+</div></div>
+</div>
+</div>
+
+<!-- ============================== 알아두기 ============================== -->
+<div class="lr-page" id="panel-learn" role="tabpanel" aria-labelledby="tab-learn" data-tabpanel="learn" hidden><article class="lr-read">
+<nav class="lr-toc" aria-label="목차"><a href="#floor">연준 금리 구조</a><a href="#paths">TGA와 RRP</a><a href="#zscore">Z-score 읽는 법</a><a href="#nots">이 화면이 말하지 않는 것</a><a href="#gloss">용어 사전</a></nav>
+<h2 id="floor"><small>1</small>연준 금리 구조 (floor system)</h2>
+<p>미국 단기 금리는 연준이 정한 위아래 금리 사이에 갇혀 움직입니다.</p>
+<figure class="lr-figure"><svg class="lr-dg" viewBox="0 0 640 290" role="img" aria-label="연준 금리 구조: 상단 SRF 4.00%, IORB 3.90%, SOFR 3.88%, 하단 ON RRP 3.75%"><rect class="d-band" x="96" y="57.1" width="120" height="165.7" rx="8"/><line class="d-axis" x1="156" x2="156" y1="16" y2="230.9"/><text class="d-muted" x="156" y="12" text-anchor="middle">금리 ↑</text><line class="d-tick" x1="104" x2="208" y1="57.1" y2="57.1" style="stroke:var(--pressure-3)"/><text class="d-strong" x="88" y="61.1" text-anchor="end">4.00%</text><text class="d-strong" x="244" y="61.1">SRF</text><text class="d-muted" x="306" y="61.1">상단 · 연준에서 빌리는 창구</text><line class="d-tick" x1="104" x2="208" y1="123.4" y2="123.4" style="stroke:var(--series-iorb)"/><text class="d-strong" x="88" y="127.4" text-anchor="end">3.90%</text><text class="d-strong" x="244" y="127.4">IORB</text><text class="d-muted" x="306" y="127.4">은행이 연준에 맡기면 받는 이자</text><line class="d-tick" x1="104" x2="208" y1="136.7" y2="136.7" style="stroke:var(--series-sofr)"/><text class="d-strong" x="88" y="140.7" text-anchor="end">3.88%</text><path class="d-arrow" d="M212 136.7 L236 153.4"/><text class="d-strong" x="244" y="157.4">SOFR</text><text class="d-muted" x="306" y="157.4">시장 금리 (담보 하루 대출)</text><line class="d-tick" x1="104" x2="208" y1="222.9" y2="222.9" style="stroke:var(--series-rrp)"/><text class="d-strong" x="88" y="226.9" text-anchor="end">3.75%</text><text class="d-strong" x="244" y="226.9">ON RRP</text><text class="d-muted" x="306" y="226.9">하단 · MMF 등이 연준에 맡기면 받는 이자</text><text class="d-muted" x="156" y="250.9" text-anchor="middle">금리는 이 범위 안에 갇힌다</text></svg><figcaption>2026-09-25 기준 예시입니다. 오늘의 IORB·SOFR 값은 압력 탭에 있습니다. 눈금 색은 압력 탭 차트와 같은 지표 색입니다.</figcaption></figure>
+<ul>
+<li><strong>IORB</strong>는 빌리는 금리가 아니라, 은행이 연준에 <strong>예치하면 받는</strong> 이자입니다.</li>
+<li>연준에서 실제로 돈을 빌리는 창구는 <strong>SRF</strong>와 재할인창구입니다. 담보가 반드시 필요하고, 은행만 쓸 수 있으며, 일부러 비싸게 정해 둡니다.</li>
+<li><strong>SOFR이 IORB보다 낮은 이유:</strong> 레포시장의 큰 대여자(MMF·GSE·FHLB)는 IORB를 받을 자격이 없습니다. 이들의 대안은 ON RRP(범위 하단)라서, 그보다 조금만 높아도 기꺼이 빌려줍니다.</li>
+</ul>
+
+<h2 id="paths"><small>2</small>TGA와 RRP는 같은 뺄셈이 아니다</h2>
+<p>정부가 국채를 팔아 TGA를 채울 때, 그 돈이 어디서 나오느냐에 따라 지급준비금에 미치는 영향이 다릅니다.</p>
+<figure class="lr-figure"><svg class="lr-dg" viewBox="0 0 640 250" role="img" aria-label="국채 발행 자금의 두 경로"><text class="d-strong" x="0" y="18">경로 A · RRP에서 나온 돈</text><rect class="d-box" x="0" y="30" width="170" height="52" rx="8"/><text class="d-strong" x="85.0" y="52" text-anchor="middle">MMF</text><text class="d-muted" x="85.0" y="70" text-anchor="middle">RRP에 맡겨 둔 돈</text><path class="d-arrow" d="M170 56 L224 56"/><path class="d-head" d="M230 56 l-8 -4 v8 z"/><rect class="d-box" x="230" y="30" width="170" height="52" rx="8"/><text class="d-strong" x="315.0" y="52" text-anchor="middle">국채 매입</text><text class="d-muted" x="315.0" y="70" text-anchor="middle">정부에 돈 지급</text><path class="d-arrow" d="M400 56 L454 56"/><path class="d-head" d="M460 56 l-8 -4 v8 z"/><rect class="d-box" x="460" y="30" width="180" height="52" rx="8"/><text class="d-strong" x="550.0" y="52" text-anchor="middle">TGA ↑ · RRP ↓</text><text class="d-muted" x="550.0" y="70" text-anchor="middle">지급준비금 그대로</text><text class="d-strong" x="0" y="140">경로 B · 은행 예금에서 나온 돈 <tspan class="d-muted">(지금)</tspan></text><rect class="d-box" x="0" y="152" width="170" height="52" rx="8"/><text class="d-strong" x="85.0" y="174" text-anchor="middle">예금자·기관</text><text class="d-muted" x="85.0" y="192" text-anchor="middle">은행 예금</text><path class="d-arrow" d="M170 178 L224 178"/><path class="d-head" d="M230 178 l-8 -4 v8 z"/><rect class="d-box" x="230" y="152" width="170" height="52" rx="8"/><text class="d-strong" x="315.0" y="174" text-anchor="middle">국채 매입</text><text class="d-muted" x="315.0" y="192" text-anchor="middle">정부에 돈 지급</text><path class="d-arrow" d="M400 178 L454 178"/><path class="d-head" d="M460 178 l-8 -4 v8 z"/><rect class="d-box-hi" x="460" y="152" width="180" height="52" rx="8"/><text class="d-strong" x="550.0" y="174" text-anchor="middle">TGA ↑ · 지급준비금 ↓</text><text class="d-muted" x="550.0" y="192" text-anchor="middle">RRP 완충 없음</text></svg><figcaption>RRP가 거의 0으로 고갈된 지금은 경로 B입니다. TGA가 늘면 지급준비금이 곧바로 줄어듭니다.</figcaption></figure>
+
+<h2 id="zscore"><small>3</small>Z-score 읽는 법</h2>
+<p>SOFR − IORB 카드에 붙은 Z-score는 오늘 값이 평소보다 얼마나 튀었는지를, 평소 흔들림의 폭을 기준으로 잰 숫자입니다.</p>
+<div class="lr-formula" role="math"><span class="lr-term">( 오늘 값</span><span class="lr-op">−</span><span class="lr-term">최근 6개월 평균 )</span><span class="lr-op">÷</span><span class="lr-term">최근 6개월 흔들림 폭 <small class="lr-muted">표준편차</small></span></div>
+<ul>
+<li><strong>0 근처</strong>는 평소 수준, <strong>2 이상</strong>이면 이례적입니다. 오늘은 <strong data-f="z6m">–</strong>입니다.</li>
+<li>위쪽(+)만 경보로 봅니다. 스프레드가 평소보다 크게 낮은 것은 돈이 넉넉하다는 뜻이기 때문입니다.</li>
+<li>같은 +10bp라도 평소 흔들림이 작은 시기에는 큰 사건이고, 흔들림이 큰 시기에는 흔한 일입니다. 금액보다 “평소 대비”를 보는 이유입니다.</li>
+</ul>
+<p><strong>약점: 스트레스가 이어지면 스스로 둔해집니다.</strong> 튀는 날들이 6개월 창에 쌓이면 흔들림 폭(나누는 값)이 커지고 평균(빼는 값)도 올라갑니다. 그래서 같은 크기의 이탈도 Z-score가 작게 나옵니다. 2025년 연말이 그랬습니다.</p>
+<figure class="lr-figure"><table class="lr-ztable"><caption class="lr-sr">2025년 연말 SOFR − IORB와 Z-score</caption><thead><tr><th scope="col">날짜</th><th scope="col">SOFR − IORB</th><th scope="col">6개월 흔들림 폭</th><th scope="col">Z-score</th></tr></thead><tbody>
+<tr><td>2025-12-15</td><td>+10bp</td><td>7.9bp</td><td>+1.15 <span class="lr-muted">기준 미달</span></td></tr>
+<tr><td>2025-12-29</td><td>+12bp</td><td>7.8bp</td><td>+1.35 <span class="lr-muted">기준 미달</span></td></tr>
+<tr><td>2025-12-31</td><td>+22bp</td><td>8.0bp</td><td><b>+2.54</b></td></tr>
+</tbody></table><figcaption>10월부터 스파이크가 이어져 흔들림 폭이 평소의 두 배 가까이 커져 있었습니다. +10bp를 넘는 날에도 Z-score는 2에 못 미쳤습니다.</figcaption></figure>
+<figure class="lr-figure"><svg class="lr-dg" viewBox="0 0 640 150" role="img" aria-label="같은 +10bp의 Z-score 비교: 조용하던 2025-09-30은 +3.24, 연말 스파이크 직후 2026-01-30은 +0.95. 경보 기준은 2."><text class="d-strong" x="0" y="16">같은 +10bp, 다른 Z-score</text><line class="d-axis" x1="220" x2="220" y1="32" y2="126"/><rect x="220" y="44" width="324" height="22" style="fill:var(--series-sofr)"/><text class="d-strong" x="0" y="54">2025-09-30</text><text class="d-muted" x="0" y="70">조용하던 시기 · 흔들림 4.9bp</text><text class="d-strong" x="552" y="60">+3.24</text><rect x="220" y="90" width="95" height="22" style="fill:var(--series-sofr)"/><text class="d-strong" x="0" y="100">2026-01-30</text><text class="d-muted" x="0" y="116">연말 스파이크 직후 · 흔들림 7.1bp</text><text class="d-strong" x="323" y="106">+0.95</text><line x1="420" x2="420" y1="34" y2="126" style="stroke:var(--pressure-1);stroke-width:2"/><text class="d-muted" x="426" y="140">경보 기준 2</text></svg><figcaption>둔해진 효과는 튀던 날들이 6개월 창에서 빠져나가면 사라집니다. 2026년 6월에는 같은 +10bp가 다시 +2.9로 읽혔습니다.</figcaption></figure>
+<p><strong>그래서 절대 기준이 안전망입니다.</strong> 위 표의 날들은 Z-score가 아니라 +5bp 절대 기준, 3일 중 2일 지속 조건, SRF 사용액으로 잡혔고 L3까지 올라갔습니다. 압력 단계는 Z-score와 절대 기준 중 <strong>하나만 걸려도</strong> 켜지도록 되어 있습니다.</p>
+
+<h2 id="nots"><small>4</small>이 화면이 말하지 않는 것</h2>
+<ul class="lr-nots"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg><span><strong>예측치.</strong> 다음 주, 다음 달의 유동성을 추정하지 않습니다.</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg><span><strong>목표가.</strong> 주가나 지수가 어디까지 간다는 숫자를 주지 않습니다.</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg><span><strong>매매 신호.</strong> “주의”는 사라는 뜻도, 팔라는 뜻도 아닙니다.</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg><span><strong>단독 결론.</strong> 한 지표만으로 판단하지 않습니다. 수위와 압력을 함께 봅니다.</span></li></ul>
+
+<h2 id="gloss"><small>5</small>용어 사전</h2>
+<dl class="lr-gloss"><div><dt>Net Liquidity<span class="lr-code">WALCL − TGA − RRP</span></dt><dd>연준이 푼 돈 중 정부 금고와 역레포에 묶이지 않은 몫. 시장 유동성의 대략적인 수위.</dd></div><div><dt>연준 총자산<span class="lr-code">WALCL</span></dt><dd>연준이 보유한 국채·MBS 등 자산의 합. 늘면 돈을 푼 것, 줄면(양적긴축) 거둬들인 것.</dd></div><div><dt>연준 국채 보유<span class="lr-code">TREAST</span></dt><dd>연준 총자산 중 미국 국채 부분.</dd></div><div><dt>연준 MBS 보유<span class="lr-code">WSHOMCB</span></dt><dd>연준 총자산 중 주택저당증권 부분. 만기 상환으로 조금씩 줄어듭니다.</dd></div><div><dt>TGA<span class="lr-code">WTREGEN</span></dt><dd>미 재무부가 연준에 둔 정부 금고. 늘면 시장 돈을 빨아들이고, 줄면 풀어줍니다.</dd></div><div><dt>역레포 (RRP)<span class="lr-code">RRPONTSYD</span></dt><dd>MMF 등이 남는 돈을 연준에 하룻밤 맡기는 창구. 시장에서 쓰이지 않고 쉬는 돈.</dd></div><div><dt>지급준비금<span class="lr-code">WRESBAL</span></dt><dd>은행이 연준에 맡겨 둔 돈. 은행 간 결제와 단기자금 공급의 실제 연료.</dd></div><div><dt>유통화폐<span class="lr-code">WCURCIR</span></dt><dd>지폐와 동전. 연준의 부채지만 은행 시스템 밖에 있어 유동성 판단에서는 따로 봅니다.</dd></div><div><dt>은행 총자산<span class="lr-code">TLAACBW027SBOG</span></dt><dd>미국 상업은행 전체 자산. 지급준비금이 충분한지 비율을 낼 때 분모로 씁니다.</dd></div><div><dt>IORB<span class="lr-code">IORB</span></dt><dd>연준이 은행 지급준비금에 주는 이자. 빌리는 금리가 아니라 맡기면 받는 금리. 금리 체계의 기준선.</dd></div><div><dt>SOFR<span class="lr-code">SOFR</span></dt><dd>미국 국채를 담보로 하루 돈을 빌리는 시장 금리. 단기자금의 실제 가격.</dd></div><div><dt>SOFR − IORB<span class="lr-code">bp</span></dt><dd>시장 금리와 기준 금리의 차이. 평소 음수, 양수로 오르면 돈 구하기가 빡빡해졌다는 신호.</dd></div><div><dt>Z-score<span class="lr-code">6개월</span></dt><dd>오늘 값이 최근 6개월 평소보다 얼마나 튀었는지를 흔들림 폭 기준으로 잰 숫자. 2 이상이면 이례적.</dd></div><div><dt>SRF<span class="lr-code">뉴욕 연은 API</span></dt><dd>연준의 상시 레포 창구. 은행이 국채를 맡기고 연준에서 돈을 빌리는 비상구. 일부러 비싸게 설정.</dd></div><div><dt>ON RRP 금리<span class="lr-code">RRPONTSYAWARD</span></dt><dd>역레포에 맡기면 받는 이자. 연준 금리 범위의 하단 역할.</dd></div></dl>
+</article></div>
+</main>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

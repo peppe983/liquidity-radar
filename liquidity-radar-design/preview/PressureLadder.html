@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko">
+<head><link rel="stylesheet" href="../design-system/tokens.css"><link rel="stylesheet" href="../design-system/components/bundle.css"><script src="../design-system/components/bundle.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PressureLadder</title>
+<style>html,body{margin:0;background:var(--surface);} .pad{padding:16px;}</style></head>
+<body class="lr-root">
+<div class="pad" style="max-width:640px"><div class="lr-ladder" aria-label="압력 4단계"><div class="lr-step">
+<span class="lr-step__lv"><i style="height:52px;background:var(--pressure-3)"></i>L3</span>
+<div><div class="lr-step__name">심각</div><div class="lr-step__rule">SOFR−IORB ≥ +30bp, 또는 SRF ≥ $10B</div></div>
+<span></span></div><div class="lr-step">
+<span class="lr-step__lv"><i style="height:34px;background:var(--pressure-2)"></i>L2</span>
+<div><div class="lr-step__name">경계</div><div class="lr-step__rule">이탈이 3일 중 2일 지속, 또는 SOFR−IORB ≥ +15bp, 또는 SRF ≥ $1B</div></div>
+<span></span></div><div class="lr-step">
+<span class="lr-step__lv"><i style="height:18px;background:var(--pressure-1)"></i>L1</span>
+<div><div class="lr-step__name">주의</div><div class="lr-step__rule">SOFR−IORB ≥ +5bp, 또는 평소 대비 크게 벗어남 (하루)</div></div>
+<span></span></div><div class="lr-step is-now" aria-current="true">
+<span class="lr-step__lv"><i style="height:6px;background:var(--pressure-0)"></i>L0</span>
+<div><div class="lr-step__name">정상</div><div class="lr-step__rule">아래 어느 조건에도 해당하지 않음</div></div>
+<span class="lr-here">지금 여기</span></div></div></div>
+</body>
+</html>

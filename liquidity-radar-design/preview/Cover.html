@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head><link rel="stylesheet" href="../design-system/tokens.css"><link rel="stylesheet" href="../design-system/components/bundle.css"><script src="../design-system/components/bundle.js"></script>
+<meta charset="utf-8">
+<title>Liquidity Radar</title>
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--surface); color:var(--ink); font-family:var(--font-sans); overflow:hidden; }
+  .cover { position:relative; height:288px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:288px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:288px; }
+  .netliq { fill:var(--series-netliq); }
+  .reserves { fill:var(--series-reserves); }
+  .tga { fill:var(--series-tga); }
+  .rrp { fill:var(--series-rrp); }
+  .deep { fill:var(--ink); }
+  .blk { rx:var(--radius-lg); }
+  .sm { rx:var(--radius-sm); }
+  .arc { fill:none; stroke:var(--surface); stroke-width:2; }
+  .ping { fill:var(--surface); }
+  .words { position:absolute; left:var(--space-6); bottom:var(--space-6); max-width:440px; }
+  .name { margin:0; font-size:80px; line-height:.95; font-weight:700; letter-spacing:-.02em; color:var(--ink); }
+  .tag { margin:var(--space-3) 0 0 4px; font-size:14px; line-height:20px; color:var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      series-netliq 160×256 slab bled off the top (Net Liquidity, the headline series) · ink 176×224 bled off the right · series-reserves 112×128 · series-tga 112×48 · series-rrp 16×16, nearly gone like the RRP buffer — ≈36% of 960×288
+  arrangement one tall netliq slab with satellites, bottoms on one line space-6 above the edge, space-4 gutters
+  pattern     radar arcs, from the name and "날씨 예보에 가깝다": four surface-colour hairlines (stroke-series 2px) at a space-7 pitch, cut into the ink block from its lower-left corner, with the ping dot
+  scales      sides in space-4 multiples; gutters space-4; arc pitch space-7 (48px); corners radius-lg, the RRP chip radius-sm
+-->
+<defs><clipPath id="ink"><rect x="320" y="16" width="176" height="224" rx="12"/></clipPath></defs>
+<rect class="netliq blk" x="16" y="-16" width="160" height="256" rx="12"/>
+<rect class="rrp sm" x="192" y="16" width="16" height="16" rx="4"/>
+<rect class="tga blk" x="192" y="48" width="112" height="48" rx="12"/>
+<rect class="reserves blk" x="192" y="112" width="112" height="128" rx="12"/>
+<rect class="deep blk" x="320" y="16" width="176" height="224" rx="12"/>
+<g clip-path="url(#ink)">
+  <circle class="arc" cx="336" cy="224" r="48"/>
+  <circle class="arc" cx="336" cy="224" r="96"/>
+  <circle class="arc" cx="336" cy="224" r="144"/>
+  <circle class="arc" cx="336" cy="224" r="192"/>
+  <circle class="ping" cx="336" cy="224" r="6"/>
+</g>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Liquidity<br>Radar</h1>
+<p class="tag">미국 달러 유동성의 방향과 환경을 읽는 날씨 예보.</p>
+</div>
+</div>
+</body>
+</html>
