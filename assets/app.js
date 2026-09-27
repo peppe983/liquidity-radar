@@ -142,6 +142,61 @@
     fill("factornote", head + body);
   }
 
+  /* ---------- 연준 대차대조표 그림 (자산 = 부채) ---------- */
+  // 요인 막대의 부호를 설명하는 그림. 지급준비금 = 총자산 − 나머지 부채 칸이라는 걸
+  // 두 기둥의 높이가 같다는 것으로 보여준다. 자산 쪽은 새 색을 늘리지 않으려고 무채색.
+  function renderBalanceSheet(assets, liabs) {
+    var box = $("#bsheet"), NS = "http://www.w3.org/2000/svg";
+    function el(n, a, p) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+    function draw() {
+      var W = Math.max(300, Math.min(640, box.clientWidth || 640)), compact = W < 520;
+      // 좁은 화면에서는 라벨 자리(왼쪽 "기타 자산", 오른쪽 "지급준비금")를 먼저 잡고 남는 폭을 기둥에 준다
+      var lab = compact ? 66 : 150, rlab = compact ? 76 : 150, eqW = compact ? 20 : 56;
+      var colW = Math.min(100, Math.floor((W - lab - rlab - eqW - 8 - 28) / 2));
+      var ax = lab + 8, lx = ax + colW + eqW, top = 34, colH = 200, H = top + colH + 12;
+      var total = liabs.reduce(function (s, x) { return s + x.v; }, 0), k = colH / total;
+      box.innerHTML = "";
+      var svg = el("svg", { class: "lr-dg", viewBox: "0 0 " + W + " " + H, role: "img",
+        "aria-label": "연준 대차대조표. 자산 " + assets.map(function (a) { return a.name + " " + tn(a.v); }).join(", ") +
+          ". 부채 " + liabs.map(function (a) { return a.name + " " + tn(a.v); }).join(", ") + ". 단위 조 달러." }, box);
+      function head(x, text) { var t = el("text", { class: "d-strong", x: x, y: 18, "text-anchor": "middle" }, svg); t.textContent = text; }
+      head(ax + colW / 2, "자산 " + tn(total)); head(lx + colW / 2, "부채 " + tn(total));
+      var eq = el("text", { class: "d-strong", x: ax + colW + eqW / 2, y: top + colH / 2 + 5, "text-anchor": "middle" }, svg); eq.textContent = "=";
+      // 기둥: 아래에서 위로 쌓는다(수위 탭 누적 차트와 같은 순서 — 지급준비금이 맨 아래)
+      function column(items, x, side) {
+        var y = top + colH, marks = [];
+        items.forEach(function (it) {
+          var h = it.v * k; y -= h;
+          el("rect", { x: x, y: y, width: colW, height: Math.max(h, 0.5),
+            style: it.color ? "fill:var(--" + it.color + ");stroke:var(--surface-raised);stroke-width:1" : "fill:var(--surface-sunken);stroke:var(--line-strong);stroke-width:1" }, svg);
+          marks.push({ it: it, cy: y + h / 2 });
+        });
+        // 라벨이 겹치지 않게 최소 간격을 두고, 아래로 넘치면 위로 되민다
+        var gap = compact ? 30 : 20;
+        marks.sort(function (a, b) { return a.cy - b.cy; });
+        marks.forEach(function (m, i) { m.ly = i ? Math.max(m.cy, marks[i - 1].ly + gap) : Math.max(m.cy, top + 6); });
+        for (var i = marks.length - 1; i >= 0; i--) {
+          var lim = i === marks.length - 1 ? top + colH - (compact ? 14 : 2) : marks[i + 1].ly - gap;
+          if (marks[i].ly > lim) marks[i].ly = lim;
+        }
+        marks.forEach(function (m) {
+          var edge = side === "right" ? x + colW : x, tx = side === "right" ? edge + 14 : edge - 14;
+          el("path", { class: "d-arrow", d: "M" + edge + " " + m.cy.toFixed(1) + " L" + (side === "right" ? tx - 4 : tx + 4) + " " + m.ly.toFixed(1), style: "stroke-width:1" }, svg);
+          var anchor = side === "right" ? "start" : "end";
+          var t = el("text", { x: tx, y: m.ly + 4, "text-anchor": anchor }, svg);
+          var n = el("tspan", { class: "d-strong" }, t); n.textContent = m.it.name;
+          var v = el("tspan", compact ? { class: "d-muted", x: tx, dy: 15 } : { class: "d-muted", dx: 6 }, t);
+          v.textContent = tn(m.it.v) + (m.it.v < 0.01 && !compact ? " (거의 0)" : "");
+        });
+      }
+      column(assets, ax, "left");
+      column(liabs, lx, "right");
+    }
+    draw();
+    var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(draw, 80); });
+    return draw;
+  }
+
   /* ---------- 데이터 발표주기 ---------- */
   function renderFreshness(L) {
     var s = L.series, asOf = L.as_of_date;
@@ -296,7 +351,6 @@
     v.other = v.walcl - v.res - v.cur - v.tga - v.rrp;
     ["walcl", "tga", "rrp", "res", "cur", "bank", "nl", "other"].forEach(function (k) { if (v[k] != null) fill(k, tn(v[k])); });
     fill("ratio", (v.res / v.bank * 100).toFixed(1) + "%");
-    fill("wrong", tn(v.res - v.tga - v.rrp));
     var chg = A.net_liquidity_30d_change_trillions;
     fill("nlchg", chg == null ? "확인 불가" : Math.abs(chg) < 0.0005 ? "변화 없음" : (chg > 0 ? "▲ " : "▼ ") + Math.abs(chg).toFixed(3) + "조");
     var sp = P.spreads_bp ? P.spreads_bp.sofr_minus_iorb : null;
@@ -346,36 +400,70 @@
 
     // 요약 탭의 나머지
     renderFactors(A.decomposition, v.res);
+    var treast = now("TREAST"), mbs = now("WSHOMCB"), redrawBalance = null;
+    if (treast != null && mbs != null) {
+      redrawBalance = renderBalanceSheet(
+        [{ name: "국채", v: treast }, { name: "MBS", v: mbs }, { name: "기타 자산", v: v.walcl - treast - mbs }],
+        [{ name: "지급준비금", v: v.res, color: "series-reserves" }, { name: "유통화폐", v: v.cur, color: "series-currency" },
+         { name: "TGA", v: v.tga, color: "series-tga" }, { name: "RRP", v: v.rrp, color: "series-rrp" }, { name: "기타", v: v.other, color: "series-other" }]);
+    }
     renderFreshness(L);
     renderCalendar(L.as_of_date);
     var redrawTimeline = renderTimeline(dates, Dd.level, lv);
+    var redrawSummary = function () { redrawTimeline(); if (redrawBalance) redrawBalance(); };
 
     // 차트 — 시안의 spec 그대로, demoAt(툴팁 고정)만 뺐다
     var F = LR.fmt;
-    var wrong = W.reserves.map(function (r, i) { return r - W.tga[i] - W.rrp[i]; });
+    // 네 지표 한눈에: S&P 비교를 켜면 작은 차트를 둘 다 기간 시작=100으로 바꿔 한 축에 겹친다
+    // (눈금이 다른 두 값을 두 축에 겹치지 않는다는 규칙). 스펙을 getter로 둬서 토글 때 다시 그리기만 하면 된다.
+    // RRP처럼 기간 시작 값이 0 근처면 시작=100으로 바꿀 때 수천 배로 튀므로(6개월 기준 최대 3,462)
+    // 시작 값이 minBase 이상인 기간에만 겹친다. 지금 데이터로는 RRP는 3년 기간에서만 겹쳐진다.
+    var RRP_MIN_BASE = 0.1; // 조$
+    function periodStart(values) { return values[LR.startIndex(dates, LR.period)]; }
+    function miniSpec(label, color, values, extra) {
+      var minBase = extra && extra.minBase;
+      function on() { return LR.overlay && (!minBase || periodStart(values) >= minBase); }
+      return Object.assign({
+        dates: dates, mini: true, legend: false,
+        get index100() { return on(); },
+        get fmt() { return on() ? F.idx : F.tn; },
+        get series() {
+          var s = [{ label: label, color: color, values: values }];
+          if (on()) s.push({ label: "S&P 500", color: "series-spx", values: W.spx });
+          return s;
+        }
+      }, extra && extra.includeZero ? { get includeZero() { return !on(); } } : {});
+    }
+    function fourNote() {
+      var base = periodStart(W.rrp), rrpOn = base >= RRP_MIN_BASE;
+      $("#four-overlay").textContent = " S&P 500을 겹쳐 봅니다. 두 선 모두 기간 시작=100이라 세로 눈금은 조$가 아니라 지수입니다. " +
+        (rrpOn ? "RRP도 기간 시작 값이 " + tn(base) + "조$라 함께 겹쳤습니다."
+               : "RRP는 기간 시작 값이 " + tn(base) + "조$로 0에 가까워, 시작=100으로 바꾸면 작은 흔들림이 크게 부풀려져 보이므로 겹치지 않습니다. 기간을 3년으로 바꾸면 RRP에도 겹쳐 볼 수 있습니다.");
+    }
     var specs = {
       nl: { dates: dates, series: [{ label: "Net Liquidity", color: "series-netliq", values: W.netliq }], fmt: F.tn, aria: "Net Liquidity 추이" },
       res: { dates: dates, series: [{ label: "Net Liquidity", color: "series-netliq", values: W.netliq }, { label: "지급준비금", color: "series-reserves", values: W.reserves }], fmt: F.tn, aria: "Net Liquidity와 지급준비금" },
-      "m-nl": { dates: dates, mini: true, series: [{ label: "Net Liquidity", color: "series-netliq", values: W.netliq }], fmt: F.tn },
-      "m-res": { dates: dates, mini: true, series: [{ label: "지급준비금", color: "series-reserves", values: W.reserves }], fmt: F.tn },
-      "m-tga": { dates: dates, mini: true, series: [{ label: "TGA", color: "series-tga", values: W.tga }], fmt: F.tn },
-      "m-rrp": { dates: dates, mini: true, includeZero: true, series: [{ label: "RRP", color: "series-rrp", values: W.rrp }], fmt: F.tn },
+      "m-nl": miniSpec("Net Liquidity", "series-netliq", W.netliq),
+      "m-res": miniSpec("지급준비금", "series-reserves", W.reserves),
+      "m-tga": miniSpec("TGA", "series-tga", W.tga),
+      "m-rrp": miniSpec("RRP", "series-rrp", W.rrp, { minBase: RRP_MIN_BASE, includeZero: true }),
       stack: { dates: dates, stacked: true, series: [{ label: "지급준비금", color: "series-reserves", values: W.reserves }, { label: "유통화폐", color: "series-currency", values: W.currency }, { label: "TGA", color: "series-tga", values: W.tga }, { label: "RRP", color: "series-rrp", values: W.rrp }, { label: "기타", color: "series-other", values: W.other }], fmt: F.tn, aria: "연준 부채 구성 누적" },
       ratio: { dates: dates, series: [{ label: "지급준비금 ÷ 은행 총자산", short: "비율", color: "series-reserves", values: W.ratio }], fmt: F.pct },
       spx: { dates: dates, index100: true, overlay: false, series: [{ label: "Net Liquidity", color: "series-netliq", values: W.netliq }, { label: "S&P 500", color: "series-spx", values: W.spx }], fmt: F.idx, aria: "시작일=100 지수" },
-      wrong: { dates: dates, series: [{ label: "Net Liquidity (올바름)", short: "Net Liquidity", color: "series-netliq", values: W.netliq }, { label: "지급준비금 (올바름)", short: "지급준비금", color: "series-reserves", values: W.reserves }, { label: "지급준비금 − TGA − RRP (틀림)", short: "틀린 계산", color: "series-other", dash: true, values: wrong }], fmt: F.tn },
       rates: { dates: dates, series: [{ label: "IORB (기준)", short: "IORB", color: "series-iorb", values: Dd.iorb }, { label: "SOFR (시장)", short: "SOFR", color: "series-sofr", values: Dd.sofr }], fmt: F.rate, aria: "IORB와 SOFR" },
       spread: { dates: dates, includeZero: true, series: [{ label: "SOFR − IORB", color: "series-sofr", values: Dd.spread }], fmt: F.bp, endLabels: false,
         thresholds: [{ value: 5, label: "+5 L1", color: "pressure-1" }, { value: 15, label: "+15 L2", color: "pressure-2" }, { value: 30, label: "+30 L3", color: "pressure-3" }] },
       srf: Dd.srf ? { kind: "bars", dates: dates, values: Dd.srf, aria: "SRF 사용액 로그 막대" } : null
     };
     $$("[data-chart]").forEach(function (node) { var s = specs[node.getAttribute("data-chart")]; if (s) LR.chart(node, s); });
-    return redrawTimeline;
+    fourNote();
+    return { redrawSummary: redrawSummary, fourNote: fourNote };
   }
 
   /* ---------- 탭 · 칩 · 토글 ---------- */
   var TABS = ["summary", "level", "pressure", "learn"];
-  function wire(redrawTimeline) {
+  function wire(hooks) {
+    hooks = hooks || {};
     function show(name, focus) {
       TABS.forEach(function (t) {
         var on = t === name;
@@ -384,7 +472,7 @@
         if (on && focus) b.focus();
       });
       LR.renderAll();
-      if (name === "summary" && redrawTimeline) redrawTimeline();
+      if (name === "summary" && hooks.redrawSummary) hooks.redrawSummary();
     }
     function fromHash() {
       var h = location.hash.slice(1);
@@ -411,14 +499,16 @@
       LR.chips(g, function (p) {
         periodGroups.forEach(function (o) { $$("button[data-value]", o).forEach(function (x) { x.setAttribute("aria-pressed", x.getAttribute("data-value") === p ? "true" : "false"); }); });
         LR.setPeriod(p);
+        if (hooks.fourNote) hooks.fourNote();
       });
     });
-    var overlayBtns = $$("[data-lr-overlay]");
+    var overlayBtns = $$("[data-lr-overlay]"), fourNote = $("[data-four-overlay]");
     overlayBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         if (btn.getAttribute("aria-disabled") === "true") return;
         var on = !LR.overlay;
         overlayBtns.forEach(function (o) { o.setAttribute("aria-pressed", on ? "true" : "false"); });
+        fourNote.hidden = !on;
         LR.setOverlay(on);
       });
     });
@@ -426,9 +516,9 @@
     var level = $("#panel-level"), pressure = $("#panel-pressure");
     var lvBtn = $("[data-lr-overlay]", level);
     LR.subtabs($("[data-lr-sub]", level), level, function (id) {
-      var off = id === "four" || id === "spx";
+      var off = id === "spx";
       lvBtn.setAttribute("aria-disabled", off ? "true" : "false");
-      lvBtn.title = off ? (id === "spx" ? "이 차트에는 이미 S&P 500이 있습니다" : "작은 차트 네 개에는 붙이지 않습니다") : "차트 아래에 S&P 500을 같은 기간으로 붙여 봅니다";
+      lvBtn.title = off ? "이 차트에는 이미 S&P 500이 있습니다" : id === "four" ? "작은 차트에 S&P 500을 기간 시작=100으로 겹쳐 봅니다" : "차트 아래에 S&P 500을 같은 기간으로 붙여 봅니다";
     });
     var pw = $("[data-lr-periodwrap]", pressure);
     LR.subtabs($("[data-lr-sub]", pressure), pressure, function (id) { pw.style.visibility = id === "verdict" ? "hidden" : "visible"; });

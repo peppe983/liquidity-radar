@@ -70,7 +70,9 @@
  <div class="lr-axis"><span></span><div class="lr-axis__scale"><span>← 지급준비금 감소</span><span>0</span><span>지급준비금 증가 →</span></div><span></span></div>
  <div class="lr-factors" id="factors"></div>
  <p class="lr-card__note" data-f="factornote"></p>
- <p class="lr-caption" style="margin:8px 0 0">연준 총자산이 늘면 돈이 풀리고, TGA·RRP·유통화폐가 늘면 그만큼 지급준비금이 줄어듭니다. 오른쪽 작은 글씨는 각 항목 자체의 변화량입니다. 기타에는 작은 부채들과 집계 시점 차이(지급준비금은 주 평균, 나머지는 수요일 값)가 섞여 있습니다.</p>
+ <figure class="lr-figure lr-bsheet"><div id="bsheet"></div>
+ <figcaption>연준 장부는 양쪽 높이가 항상 같습니다. 지급준비금은 총자산에서 나머지 칸을 빼고 남은 몫이라, 총자산이 그대로일 때 TGA·RRP·유통화폐 칸이 커지면 그만큼 작아집니다. 위 막대에서 TGA는 늘었는데 막대가 왼쪽(지급준비금 감소)으로 가는 이유입니다.</figcaption></figure>
+ <p class="lr-caption" style="margin:8px 0 0">오른쪽 작은 글씨는 각 항목 자체의 변화량입니다. 기타에는 작은 부채들과 집계 시점 차이(지급준비금은 주 평균, 나머지는 수요일 값)가 섞여 있습니다.</p>
 </section><section class="lr-card" aria-labelledby="d-t">
  <div class="lr-card__head"><h2 class="lr-card__title" id="d-t">데이터 발표주기</h2><span class="lr-caption">지표마다 나오는 주기가 다릅니다</span></div>
  <div class="lr-rel" id="fresh"></div>
@@ -95,7 +97,7 @@
 <div class="lr-page" id="panel-level" role="tabpanel" aria-labelledby="tab-level" data-tabpanel="level" hidden>
 <p class="lr-tabintro"><b>물이 얼마나 있나.</b> 시장에 풀린 달러의 양을 봅니다. 차트를 하나씩 골라 보세요.</p>
 <div class="lr-toolbar">
- <div class="lr-toolbar__group"><div class="lr-chips" role="group" aria-label="차트 고르기" data-lr-sub><button class="lr-chip" data-value="nl" aria-pressed="true">Net Liquidity</button><button class="lr-chip" data-value="res" aria-pressed="false">지급준비금</button><button class="lr-chip" data-value="four" aria-pressed="false">네 지표 한눈에</button><button class="lr-chip" data-value="stack" aria-pressed="false">연준 부채 구성</button><button class="lr-chip" data-value="ratio" aria-pressed="false">지급준비금이 충분한가</button><button class="lr-chip" data-value="spx" aria-pressed="false">주가와 비교</button><button class="lr-chip" data-value="wrong" aria-pressed="false">이렇게 계산하면 틀려요</button></div></div>
+ <div class="lr-toolbar__group"><div class="lr-chips" role="group" aria-label="차트 고르기" data-lr-sub><button class="lr-chip" data-value="nl" aria-pressed="true">Net Liquidity</button><button class="lr-chip" data-value="res" aria-pressed="false">지급준비금</button><button class="lr-chip" data-value="four" aria-pressed="false">네 지표 한눈에</button><button class="lr-chip" data-value="stack" aria-pressed="false">연준 부채 구성</button><button class="lr-chip" data-value="ratio" aria-pressed="false">지급준비금이 충분한가</button><button class="lr-chip" data-value="spx" aria-pressed="false">주가와 비교</button></div></div>
  <div class="lr-toolbar__group lr-toolbar__right" data-lr-periodwrap><button class="lr-toggle" type="button" aria-pressed="false" data-lr-overlay title="차트 아래에 S&amp;P 500을 같은 기간으로 붙여 봅니다"><i aria-hidden="true"></i>S&amp;P 500 비교</button><span class="lr-toolbar__label">기간</span><div class="lr-chips" role="group" aria-label="기간" data-lr-period><button class="lr-chip" data-value="6m" aria-pressed="false">6개월</button><button class="lr-chip" data-value="1y" aria-pressed="true">1년</button><button class="lr-chip" data-value="3y" aria-pressed="false">3년</button></div></div>
 </div>
 
@@ -118,7 +120,7 @@
 </div>
 
 <div data-panel="four" hidden>
-<section class="lr-card"><h2 class="lr-panel-title">네 지표 한눈에</h2><p class="lr-panel-q">수위를 이루는 네 숫자는 각각 어떻게 움직였나?</p><div class="lr-multiples"><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-netliq)"></i>Net Liquidity</span><span class="lr-caption">지금 <b><span data-f="nl">–</span>조$</b></span></div><div data-chart="m-nl"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-reserves)"></i>지급준비금</span><span class="lr-caption">지금 <b><span data-f="res">–</span>조$</b></span></div><div data-chart="m-res"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-tga)"></i>TGA (정부 금고)</span><span class="lr-caption">지금 <b><span data-f="tga">–</span>조$</b></span></div><div data-chart="m-tga"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-rrp)"></i>RRP (역레포)</span><span class="lr-caption">지금 <b><span data-f="rrp">–</span>조$</b></span></div><div data-chart="m-rrp"></div></div></div></section>
+<section class="lr-card"><h2 class="lr-panel-title">네 지표 한눈에</h2><p class="lr-panel-q">수위를 이루는 네 숫자는 각각 어떻게 움직였나?</p><div class="lr-multiples"><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-netliq)"></i>Net Liquidity</span><span class="lr-caption">지금 <b><span data-f="nl">–</span>조$</b></span></div><div data-chart="m-nl"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-reserves)"></i>지급준비금</span><span class="lr-caption">지금 <b><span data-f="res">–</span>조$</b></span></div><div data-chart="m-res"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-tga)"></i>TGA (정부 금고)</span><span class="lr-caption">지금 <b><span data-f="tga">–</span>조$</b></span></div><div data-chart="m-tga"></div></div><div><div class="lr-multiple__title"><span><i class="lr-swatch" style="background:var(--series-rrp)"></i>RRP (역레포)</span><span class="lr-caption">지금 <b><span data-f="rrp">–</span>조$</b></span></div><div data-chart="m-rrp"></div></div></div><p class="lr-caption" hidden data-four-overlay><i class="lr-swatch" style="background:var(--series-spx)"></i><span id="four-overlay"></span></p></section>
 <div class="lr-section-gap"><div class="lr-explain">
 <div class="lr-explain__card"><h3>무엇인가</h3><p>수위를 이루는 네 지표를 작은 차트 네 개로 나란히 놓았습니다. 각 차트는 자기 눈금을 씁니다.</p></div>
 <div class="lr-explain__card"><h3>어떻게 읽나</h3><p>핵심은 RRP입니다. 3년 전 <span data-f="rrp0">–</span>조$에서 지금 <span data-f="rrp">–</span>조$<span data-f="rrpverb">–</span>. TGA는 세금과 국채 발행에 따라 <span data-f="tgarange">–</span> 사이에서 톱니처럼 움직입니다.</p></div>
@@ -153,14 +155,6 @@
 </div></div>
 </div>
 
-<div data-panel="wrong" hidden>
-<section class="lr-card"><h2 class="lr-panel-title">이렇게 계산하면 틀려요</h2><p class="lr-panel-q">자주 보이는 “지급준비금 − TGA − RRP” 계산은 왜 틀렸나?</p><div class="lr-formula" role="math"><span class="lr-term"><i style="background:var(--series-reserves)"></i>지급준비금 <b data-f="res">–</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-tga)"></i>TGA <b data-f="tga">–</b></span><span class="lr-op">−</span><span class="lr-term"><i style="background:var(--series-rrp)"></i>RRP <b data-f="rrp">–</b></span><span class="lr-op">=</span><span class="lr-term"><b data-f="wrong">–</b> ✕ 이중 차감</span></div><div data-chart="wrong"></div></section>
-<div class="lr-section-gap"><div class="lr-explain">
-<div class="lr-explain__card"><h3>무엇인가</h3><p>인터넷에서 자주 보이는 잘못된 유동성 계산입니다. 점선이 그 결과이고, 실선 두 개가 올바른 값입니다.</p></div>
-<div class="lr-explain__card"><h3>어떻게 읽나</h3><p>점선은 올바른 두 선보다 늘 한참 아래에 있고, TGA가 움직일 때마다 엉뚱하게 흔들립니다.</p></div>
-<div class="lr-explain__card lr-explain__card--caution"><h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>주의</h3><p>지급준비금에는 애초에 TGA·RRP가 들어 있지 않습니다. 여기서 또 빼면 같은 돈을 두 번 빼는 계산이 됩니다. 빼기는 연준 총자산에서 해야 합니다.</p></div>
-</div></div>
-</div>
 </div>
 
 <!-- ============================== 압력 ============================== -->
