@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-10-09T22:08:00Z",
+  "generated_at": "2026-10-12T22:07:39Z",
   "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}",
-  "as_of_date": "2026-10-09",
+  "as_of_date": "2026-10-12",
   "series": {
     "WALCL": {
       "raw_value": 6747560.0,
@@ -29,7 +29,7 @@
       "normalized_unit": "trillions_usd",
       "observation_date": "2026-10-09",
       "publication_frequency": "daily",
-      "is_forward_filled": false
+      "is_forward_filled": true
     },
     "WRESBAL": {
       "raw_value": 3029659.0,
@@ -108,7 +108,7 @@
       "raw_unit": "percent",
       "normalized_value": 3.9,
       "normalized_unit": "percent",
-      "observation_date": "2026-10-09",
+      "observation_date": "2026-10-12",
       "publication_frequency": "daily",
       "is_forward_filled": false
     },
@@ -122,18 +122,18 @@
       "is_forward_filled": true
     },
     "SP500": {
-      "raw_value": 7765.36,
+      "raw_value": 7811.54,
       "raw_unit": "index",
-      "normalized_value": 7765.36,
+      "normalized_value": 7811.54,
       "normalized_unit": "index",
-      "observation_date": "2026-10-08",
+      "observation_date": "2026-10-09",
       "publication_frequency": "daily",
       "is_forward_filled": true
     }
   },
   "derived": {
     "net_liquidity_trillions": 5.867007,
-    "net_liquidity_30d_change_trillions": 0.0870059999999997,
+    "net_liquidity_30d_change_trillions": 0.09355699999999967,
     "walcl_wow_change_trillions": 0.004528999999999783,
     "reserves_trillions": 3.029659,
     "fed_ust_holdings_trillions": 4.566384,
@@ -142,6 +142,7 @@
   "warnings": [
     "WALCL: forward-filled from 2026-10-07",
     "WTREGEN: forward-filled from 2026-10-07",
+    "RRPONTSYD: forward-filled from 2026-10-09",
     "WRESBAL: forward-filled from 2026-10-07",
     "TREAST: forward-filled from 2026-10-07",
     "WSHOMCB: forward-filled from 2026-10-07",
@@ -151,19 +152,19 @@
     "DTWEXBGS: forward-filled from 2026-10-02",
     "SOFR: forward-filled from 2026-10-08",
     "WCURCIR: forward-filled from 2026-10-07",
-    "SP500: forward-filled from 2026-10-08"
+    "SP500: forward-filled from 2026-10-09"
   ],
   "pressure": {
-    "as_of_date": "2026-10-09",
+    "as_of_date": "2026-10-12",
     "spreads_bp": {
       "sofr_minus_iorb": -3.0
     },
     "zscore": {
       "sofr_minus_iorb": {
         "2M": -0.8619,
-        "6M": -0.1104,
-        "1Y": -0.5822,
-        "2Y": -0.094
+        "6M": -0.1036,
+        "1Y": -0.5762,
+        "2Y": -0.0956
       }
     },
     "zscore_undefined_reason": {},
@@ -200,8 +201,8 @@
     }
   },
   "assessment": {
-    "as_of_date": "2026-10-09",
-    "net_liquidity_30d_change_trillions": 0.0870059999999997,
+    "as_of_date": "2026-10-12",
+    "net_liquidity_30d_change_trillions": 0.09355699999999967,
     "quantity_direction": "up",
     "quantity_deadzone_trillions": 0.0151,
     "pressure_level": 0,
@@ -214,7 +215,7 @@
       "window_days": 30,
       "delta_treast_trillions": 0.020215000000000316,
       "delta_wtregen_trillions": -0.07048300000000007,
-      "delta_rrpontsyd_trillions": 0.00012499999999999998,
+      "delta_rrpontsyd_trillions": -0.006426,
       "delta_wresbal_trillions": 0.1047229999999999,
       "delta_walcl_trillions": 0.016647999999999996,
       "delta_wshomcb_trillions": -0.015496000000000176,
