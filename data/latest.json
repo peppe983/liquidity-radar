@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-11T01:39:37Z",
+  "generated_at": "2026-11-12T02:39:12Z",
   "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}",
-  "as_of_date": "2026-11-11",
+  "as_of_date": "2026-11-12",
   "series": {
     "WALCL": {
       "raw_value": 6748145.0,
@@ -108,7 +108,7 @@
       "raw_unit": "percent",
       "normalized_value": 3.9,
       "normalized_unit": "percent",
-      "observation_date": "2026-11-11",
+      "observation_date": "2026-11-12",
       "publication_frequency": "daily",
       "is_forward_filled": false
     },
@@ -122,18 +122,18 @@
       "is_forward_filled": true
     },
     "SP500": {
-      "raw_value": 7549.94,
+      "raw_value": 7520.93,
       "raw_unit": "index",
-      "normalized_value": 7549.94,
+      "normalized_value": 7520.93,
       "normalized_unit": "index",
-      "observation_date": "2026-11-09",
+      "observation_date": "2026-11-10",
       "publication_frequency": "daily",
       "is_forward_filled": true
     }
   },
   "derived": {
     "net_liquidity_trillions": 5.790818,
-    "net_liquidity_30d_change_trillions": 0.008000000000000007,
+    "net_liquidity_30d_change_trillions": -0.0031889999999998864,
     "walcl_wow_change_trillions": 0.0025100000000000122,
     "reserves_trillions": 2.930088,
     "fed_ust_holdings_trillions": 4.578777,
@@ -152,19 +152,19 @@
     "DTWEXBGS: forward-filled from 2026-11-06",
     "SOFR: forward-filled from 2026-11-09",
     "WCURCIR: forward-filled from 2026-11-04",
-    "SP500: forward-filled from 2026-11-09"
+    "SP500: forward-filled from 2026-11-10"
   ],
   "pressure": {
-    "as_of_date": "2026-11-11",
+    "as_of_date": "2026-11-12",
     "spreads_bp": {
       "sofr_minus_iorb": -2.0
     },
     "zscore": {
       "sofr_minus_iorb": {
-        "2M": -0.4675,
-        "6M": -0.0588,
-        "1Y": -0.351,
-        "2Y": 0.011
+        "2M": -0.4585,
+        "6M": -0.0955,
+        "1Y": -0.3441,
+        "2Y": 0.0101
       }
     },
     "zscore_undefined_reason": {},
@@ -201,8 +201,8 @@
     }
   },
   "assessment": {
-    "as_of_date": "2026-11-11",
-    "net_liquidity_30d_change_trillions": 0.008000000000000007,
+    "as_of_date": "2026-11-12",
+    "net_liquidity_30d_change_trillions": -0.0031889999999998864,
     "quantity_direction": "flat",
     "quantity_deadzone_trillions": 0.0147,
     "pressure_level": 0,
@@ -215,7 +215,7 @@
       "window_days": 30,
       "delta_treast_trillions": 0.014615999999999296,
       "delta_wtregen_trillions": 0.00850099999999998,
-      "delta_rrpontsyd_trillions": -0.011387,
+      "delta_rrpontsyd_trillions": -0.000198,
       "delta_wresbal_trillions": -0.018002000000000073,
       "delta_walcl_trillions": 0.005113999999999841,
       "delta_wshomcb_trillions": -0.014566999999999997,
