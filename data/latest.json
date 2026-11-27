@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-26T03:53:19Z",
+  "generated_at": "2026-11-27T03:53:55Z",
   "source": "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}",
-  "as_of_date": "2026-11-26",
+  "as_of_date": "2026-11-27",
   "series": {
     "WALCL": {
       "raw_value": 6741452.0,
@@ -108,7 +108,7 @@
       "raw_unit": "percent",
       "normalized_value": 3.9,
       "normalized_unit": "percent",
-      "observation_date": "2026-11-26",
+      "observation_date": "2026-11-27",
       "publication_frequency": "daily",
       "is_forward_filled": false
     },
@@ -133,8 +133,8 @@
   },
   "derived": {
     "net_liquidity_trillions": 5.824539,
-    "net_liquidity_30d_change_trillions": -0.046526000000000955,
-    "walcl_wow_change_trillions": -0.017415000000000624,
+    "net_liquidity_30d_change_trillions": -0.047627000000001196,
+    "walcl_wow_change_trillions": 0.0,
     "reserves_trillions": 2.979656,
     "fed_ust_holdings_trillions": 4.587132,
     "fed_mbs_holdings_trillions": 1.883465
@@ -155,16 +155,16 @@
     "SP500: forward-filled from 2026-11-24"
   ],
   "pressure": {
-    "as_of_date": "2026-11-26",
+    "as_of_date": "2026-11-27",
     "spreads_bp": {
       "sofr_minus_iorb": 4.0
     },
     "zscore": {
       "sofr_minus_iorb": {
-        "2M": 1.1944,
-        "6M": 1.7364,
-        "1Y": 1.0757,
-        "2Y": 0.9401
+        "2M": 1.142,
+        "6M": 1.7002,
+        "1Y": 1.0695,
+        "2Y": 0.9364
       }
     },
     "zscore_undefined_reason": {},
@@ -201,8 +201,8 @@
     }
   },
   "assessment": {
-    "as_of_date": "2026-11-26",
-    "net_liquidity_30d_change_trillions": -0.046526000000000955,
+    "as_of_date": "2026-11-27",
+    "net_liquidity_30d_change_trillions": -0.047627000000001196,
     "quantity_direction": "down",
     "quantity_deadzone_trillions": 0.0149,
     "pressure_level": 0,
@@ -215,13 +215,13 @@
       "window_days": 30,
       "delta_treast_trillions": 0.01658000000000026,
       "delta_wtregen_trillions": 0.03324000000000005,
-      "delta_rrpontsyd_trillions": -0.0009010000000000001,
+      "delta_rrpontsyd_trillions": 0.00019999999999999998,
       "delta_wresbal_trillions": -0.042483999999999966,
       "delta_walcl_trillions": -0.014187000000000616,
       "delta_wshomcb_trillions": -0.014695000000000125,
       "delta_wcurcir_trillions": 0.008592000000000155,
       "primary_driver": "TGA_refill",
-      "interpretation": "buffer_absorbed"
+      "interpretation": "mixed_or_other"
     }
   }
 }
